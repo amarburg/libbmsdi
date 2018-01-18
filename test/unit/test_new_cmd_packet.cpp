@@ -11,11 +11,11 @@ TEST(test_new_cmd_packet, non_zero_length ) {
 
   const int packetlen = sizeof(BMSDIHeader) + cmdlen;
 
-  BMSDIPacket *packet = newCommandPacket( dest, cmdlen, cmd );
+  BMSDIBuffer *packet = newCommandPacket( dest, cmdlen, cmd );
 
   ASSERT_EQ( packet->len, align32(packetlen) );
 
-  struct BMSDICmdPacket *p = (struct BMSDICmdPacket *)packet->data;
+  struct BMSDIPacket *p = (struct BMSDIPacket *)packet->data;
 
   ASSERT_EQ( p->header.dest, dest );
   ASSERT_EQ( p->header.cmd_id, cmd );
