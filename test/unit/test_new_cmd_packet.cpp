@@ -3,7 +3,7 @@
 
 #include "libbm_sdi_camera_control/bmsdi.h"
 
-TEST(test_new_cmd_packet, zero_length) {
+TEST(test_new_cmd_packet, non_zero_length ) {
 
   const uint8_t dest = 255;
   const int     cmdlen = 10;

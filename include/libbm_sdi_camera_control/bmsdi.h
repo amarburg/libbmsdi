@@ -47,6 +47,7 @@ struct BMSDIConfigPacket {
 //Operation types 2 through 127 are reserved.
 //Operation types 128 through 255 are available for device specific purposes.
 
+#define BM_TYPE_VOID     0
 #define BM_TYPE_BOOLEAN  0
 #define BM_TYPE_INT8     1
 #define BM_TYPE_INT16    2
@@ -55,23 +56,13 @@ struct BMSDIConfigPacket {
 #define BM_TYPE_STR      5
 // data types 6-127 are Reserved
 
-inline uint8_t sizeOfType( uint8_t t ) {
-  switch( t ) {
-  case BM_TYPE_BOOLEAN:
-  case BM_TYPE_INT8:
-  case BM_TYPE_STR:
-      return 1;
-  case BM_TYPE_INT16:
-      return 2;
-  case BM_TYPE_INT32:
-      return 4;
-  case BM_TYPE_INT64:
-      return 8;
 
-  default:
-      return 0;
-  }
-}
+#define BM_CAT_LENS       0
+
+// Parameters for category 0 "Lens"
+#define BM_PARAM_INST_AUTOFOCUS   1
+
+
 
 inline uint32_t align32( uint8_t x ) { return ((x + 3) & ~0x03); }
 

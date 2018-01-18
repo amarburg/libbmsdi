@@ -4,6 +4,24 @@
 
 #include "libbm_sdi_camera_control/bmsdi.h"
 
+static uint8_t sizeOfType( uint8_t t ) {
+  switch( t ) {
+  case BM_TYPE_BOOLEAN:
+  case BM_TYPE_INT8:
+  case BM_TYPE_STR:
+      return 1;
+  case BM_TYPE_INT16:
+      return 2;
+  case BM_TYPE_INT32:
+      return 4;
+  case BM_TYPE_INT64:
+      return 8;
+
+  default:
+      return 0;
+  }
+}
+
 struct BMSDIPacket *newPacket( uint8_t packetlen )
 {
   // Round up to nearest 32-bit boundary

@@ -1,9 +1,7 @@
-# Set source files
-file(GLOB BMSDI_SRC_FILES *.c )
 
 # build shared library.
 fips_begin_module( bm_sdi_camera_control )
-  fips_files( ${BMSDI_SRC_FILES} )
+  fips_files( packet.c )
 
   include_directories( ${BMSDI_INCLUDE_DIRS} )
 
