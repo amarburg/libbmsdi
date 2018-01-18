@@ -1,0 +1,12 @@
+imports:
+    fips-googletest:
+        git: https://github.com/amarburg/fips-googletest.git
+
+exports:
+  header-dirs:
+    - include/
+  modules:
+    bm_sdi_camera_control: .
+
+defines:
+  FIPS_RTTI: true

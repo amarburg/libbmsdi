@@ -1,0 +1,25 @@
+
+#include <gtest/gtest.h>
+
+#include "libbm_sdi_camera_control/bmsdi.h"
+
+TEST(test_new_cmd_packet, zero_length) {
+
+  const uint8_t dest = 255;
+  const int     cmdlen = 10;
+  const uint8_t cmd = BM_CMD_CONFIG;
+
+  const int packetlen = sizeof(BMSDIHeader) + cmdlen;
+
+  BMSDIPacket *packet = newCommandPacket( dest, cmdlen, cmd );
+
+  ASSERT_EQ( packet->len, align32(packetlen) );
+
+  struct BMSDICmdPacket *p = (struct BMSDICmdPacket *)packet->data;
+
+  ASSERT_EQ( p->header.dest, dest );
+  ASSERT_EQ( p->header.cmd_id, cmd );
+  ASSERT_EQ( p->header.cmd_len, cmdlen);
+  ASSERT_EQ( p->header.reserved, 0 );
+
+}
