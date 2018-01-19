@@ -86,7 +86,7 @@ inline int16_t floatToFixed16( float i )
 
 
 // Parameters for category 4 "Display"
-//...
+#define BM_PARAM_ZEBRA_LEVEL     2
 
 
 // Parameters for category 5 "Tally"

@@ -6,6 +6,7 @@
 static void checkPacket( BMSDIBuffer *packet, const uint8_t len, const uint8_t answer[] )
 {
   ASSERT_EQ( packet->len, len );
+  ASSERT_EQ( len, align32(len) );
   ASSERT_EQ( packet->len, align32(packet->len));
 
   for( int i = 0; i < len; ++i ) {
@@ -20,8 +21,6 @@ static void checkPacket( BMSDIBuffer *packet, const uint8_t len, const uint8_t a
 TEST(test_new_config_packet, test_inst_autofocus ) {
 
   const uint8_t answer[] = {4, 4, 0, 0, 0, 1, 0, 0};
-  const uint8_t answerlen = sizeof(answer);
-  ASSERT_EQ( answerlen, align32(answerlen) );
 
     BMSDIBuffer *packet = bmNewConfigPacket( 4,
                               BM_CAT_LENS,
@@ -29,15 +28,13 @@ TEST(test_new_config_packet, test_inst_autofocus ) {
                               BM_OP_ASSIGN, BM_TYPE_VOID,
                               0 );
 
-  checkPacket( packet, answerlen, answer );
+  checkPacket( packet, sizeof(answer), answer );
 }
 
 // BM example "turn on OIS on all cameras"
 TEST(test_new_config_packet, test_ois_all_cameras ) {
 
   const uint8_t answer[] = {255, 5, 0, 0, 0, 6, 0, 0, 1, 0, 0, 0};
-  const uint8_t answerlen = sizeof(answer);
-  ASSERT_EQ( answerlen, align32(answerlen) );
 
   BMSDIBuffer *packet = bmNewConfigPacket( 255,
                             BM_CAT_LENS,
@@ -48,7 +45,7 @@ TEST(test_new_config_packet, test_ois_all_cameras ) {
 
   bmConfigWriteInt8( packet, 1 );
 
-  checkPacket( packet, answerlen, answer );
+  checkPacket( packet, sizeof(answer), answer );
 }
 
 // BM example "set exposure to 10 ms on camera 4 (10 ms = 10000
@@ -56,8 +53,6 @@ TEST(test_new_config_packet, test_ois_all_cameras ) {
 TEST(test_new_config_packet, test_set_exposure_on_camera ) {
 
   const uint8_t answer[] = {4, 8, 0, 0, 1, 5, 3, 0, 0x10, 0x27, 0x0, 0};
-  const uint8_t answerlen = sizeof(answer);
-  ASSERT_EQ( answerlen, align32(answerlen) );
 
   BMSDIBuffer *packet = bmNewConfigPacket( 4,
                             BM_CAT_VIDEO,
@@ -68,5 +63,24 @@ TEST(test_new_config_packet, test_set_exposure_on_camera ) {
 
   bmConfigWriteInt32( packet, 10000 );
 
-  checkPacket( packet, answerlen, answer );
+  checkPacket( packet, sizeof(answer), answer );
+}
+
+
+// BM example "dd 15% to zebra level (15 % = 0.15 f = 0x0133 fp)"
+TEST(test_new_config_packet, test_increment_zebra_level ) {
+
+  const uint8_t answer[] = {4, 6, 0, 0, 4, 2, 128, 1, 0x33, 0x01, 0, 0};
+
+
+  BMSDIBuffer *packet = bmNewConfigPacket( 4,
+                            BM_CAT_DISPLAY,
+                            BM_PARAM_ZEBRA_LEVEL,
+                            BM_OP_OFFSET,
+                            BM_TYPE_FIXED16,
+                            1 );
+
+  bmConfigWriteFixed32( packet, 0.15 );
+
+  checkPacket( packet, sizeof(answer), answer );
 }
