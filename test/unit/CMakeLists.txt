@@ -4,7 +4,6 @@ gtest_begin( bmsdi )
       test_protocol.cpp
       test_new_cmd_packet.cpp
       test_new_config_packet.cpp
-      test_new_config_helpers.cpp
     )
     fips_deps( bmsdi )
 

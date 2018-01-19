@@ -3,6 +3,8 @@
 
 #include "libbm_sdi_camera_control/bmsdi.h"
 
+#include "libbm_sdi_camera_control/helpers.h"
+
 
 
 static void checkPacket( BMSDIPacket *packet, const uint8_t len, const uint8_t answer[] )
@@ -67,7 +69,7 @@ TEST(test_new_config_packet, test_inst_autofocus ) {
 
   // Try this version
   {
-    BMSDIBuffer *buffer = bmNewInstantaneousAutofocus( buffer, camAddr );
+    BMSDIBuffer *buffer = bmInstantaneousAutofocus( camAddr );
 
     ASSERT_TRUE( buffer != NULL );
 
@@ -77,7 +79,7 @@ TEST(test_new_config_packet, test_inst_autofocus ) {
     free(buffer);
   }
 
-  // Try this version
+  // And this version
   {
     BMSDIBuffer *buffer = bmAllocBuffer();
     ASSERT_TRUE( buffer != NULL );
