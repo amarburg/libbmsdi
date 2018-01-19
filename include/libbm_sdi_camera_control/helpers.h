@@ -24,6 +24,22 @@ inline BMSDIBuffer *bmInstantaneousFocus( uint8_t dest, float focus ) {
   return buffer;
 }
 
+inline bool bmAddInstantaneousFocus( BMSDIBuffer *buffer, uint8_t dest, float focus ) {
+  BMSDIConfigPacket *config = bmAddConfigPacket( buffer,
+                                dest, BM_CAT_LENS,
+                                BM_PARAM_FOCUS,
+                                BM_OP_ASSIGN,
+                                BM_TYPE_FIXED16,
+                                0 );
+  if( !buffer ) return false;
+
+  bmConfigWriteFixed32( config, focus );
+
+  return true;
+}
+
+
+
   // Helpers for category 0 "Lens"
   inline BMSDIBuffer *bmInstantaneousAutofocus( uint8_t dest ) {
     return bmNewConfigPacket( dest, BM_CAT_LENS,
@@ -32,7 +48,6 @@ inline BMSDIBuffer *bmInstantaneousFocus( uint8_t dest, float focus ) {
                                   0 );
   }
 
-  // Helpers for category 0 "Lens"
   inline BMSDIConfigPacket *bmAddInstantaneousAutofocus( BMSDIBuffer *buffer, uint8_t dest ) {
     return bmAddConfigPacket( buffer, dest, BM_CAT_LENS,
                                   BM_PARAM_INST_AUTOFOCUS,
