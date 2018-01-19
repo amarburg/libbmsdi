@@ -66,6 +66,22 @@ struct BMSDIBuffer *bmAllocBuffer()
   return bmAllocBufferN( 255 );
 }
 
+void bmResetBuffer( struct BMSDIBuffer *buffer )
+{
+  buffer->len = 0;
+}
+
+bool bmAppendBuffer( struct BMSDIBuffer *buffer, struct BMSDIBuffer *app )
+{
+  if( (buffer->len + app->len) > buffer->alloc ) return false;
+
+  memcpy( (void *)&(buffer->data[buffer->len]), app->data, app->len );
+  buffer->len += app->len;
+
+return true;
+}
+
+
 struct BMSDIPacket *bmAddPacket( struct BMSDIBuffer *buffer,
                                 uint8_t dest, uint8_t len, uint8_t cmd )
 {

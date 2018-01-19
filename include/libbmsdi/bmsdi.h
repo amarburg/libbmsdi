@@ -2,6 +2,7 @@
 
 
 #include <stdint.h>
+#include <stdbool.h>
 
 #include "protocol.h"
 
@@ -51,7 +52,7 @@ struct BMSDIConfigPacket {
 // Core functions
 
 // "Rounds up" to nearest multiple of 4 (aka 32 bits)
-uint32_t align32( uint8_t x ); 
+uint32_t align32( uint8_t x );
 
 
 // These are the one-shot versions
@@ -64,6 +65,10 @@ struct BMSDIBuffer *bmNewConfigPacket( uint8_t dest, uint8_t category, uint8_t p
 // Version which allows for multiple commands in a buffer
 
 struct BMSDIBuffer *bmAllocBuffer();
+
+void bmResetBuffer( struct BMSDIBuffer *buffer );
+
+bool bmAppendBuffer( struct BMSDIBuffer *buffer, struct BMSDIBuffer *app );
 
 struct BMSDIPacket *bmAddPacket( struct BMSDIBuffer *buffer,
                                 uint8_t dest, uint8_t len, uint8_t cmd );
