@@ -1,6 +1,8 @@
 #pragma once
 
-
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 
 #define BM_CMD_CONFIG    0
@@ -19,6 +21,17 @@
 #define BM_TYPE_INT64    4
 #define BM_TYPE_STR      5
 // data types 6-127 are Reserved
+#define BM_TYPE_FIXED16  128    // Data elements are signed 16 bit integers
+                                // representing a real number with 5 bits
+                                // for the integer component and 11 bits for
+                                // the fractional component. The fixed point
+                                // representation is equal to the real value
+                                // multiplied by 2^11.
+
+inline int16_t floatToFixed16( float i )
+{
+  return (i * (0x01<<11));
+}
 
 
 // Configuration categories
@@ -100,3 +113,9 @@
 
 // Parameters for category 11 "PTZ Control"
 // ...
+
+
+
+#ifdef __cplusplus
+}
+#endif

@@ -7,7 +7,7 @@ TEST(test_new_packet, zero_length) {
 
   const int packetLen = 10;
 
-  BMSDIBuffer *packet = newPacket( packetLen );
+  BMSDIBuffer *packet = bmNewPacket( packetLen );
 
   ASSERT_EQ( packet->len, align32(packetLen) );
 

@@ -11,7 +11,7 @@ TEST(test_new_cmd_packet, non_zero_length ) {
 
   const int packetlen = sizeof(BMSDIHeader) + cmdlen;
 
-  BMSDIBuffer *packet = newCommandPacket( dest, cmdlen, cmd );
+  BMSDIBuffer *packet = bmNewCommandPacket( dest, cmdlen, cmd );
 
   ASSERT_EQ( packet->len, align32(packetlen) );
 

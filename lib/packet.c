@@ -22,7 +22,7 @@ static uint8_t sizeOfType( uint8_t t ) {
   }
 }
 
-struct BMSDIBuffer *newPacket( uint8_t packetlen )
+struct BMSDIBuffer *bmNewPacket( uint8_t packetlen )
 {
   // Round up to nearest 32-bit boundary
   uint8_t actuallen = align32( packetlen );
@@ -34,11 +34,11 @@ struct BMSDIBuffer *newPacket( uint8_t packetlen )
   return packet;
 }
 
-struct BMSDIBuffer *newCommandPacket( uint8_t dest, uint8_t len, uint8_t cmd )
+struct BMSDIBuffer *bmNewCommandPacket( uint8_t dest, uint8_t len, uint8_t cmd )
 {
   uint8_t packetlen = len + sizeof(struct BMSDIHeader);
 
-  struct BMSDIBuffer *out = newPacket( packetlen );
+  struct BMSDIBuffer *out = bmNewPacket( packetlen );
   struct BMSDIPacket *packet = (struct BMSDIPacket *)out->data;
 
   packet->header.dest = dest;
@@ -49,13 +49,13 @@ struct BMSDIBuffer *newCommandPacket( uint8_t dest, uint8_t len, uint8_t cmd )
   return out;
 }
 
-struct BMSDIBuffer *newConfigPacket( uint8_t dest, uint8_t category, uint8_t parameter,
+struct BMSDIBuffer *bmNewConfigPacket( uint8_t dest, uint8_t category, uint8_t parameter,
                               uint8_t op, uint8_t dataType, uint8_t count )
 {
   uint8_t datalen = sizeOfType( dataType ) * count;
   uint8_t cmdlen  = datalen + sizeof(struct BMSDIConfigHeader);
 
-  struct BMSDIBuffer *out = newCommandPacket( dest, cmdlen, BM_CMD_CONFIG );
+  struct BMSDIBuffer *out = bmNewCommandPacket( dest, cmdlen, BM_CMD_CONFIG );
   struct BMSDIConfigPacket *packet = (struct BMSDIConfigPacket *)out->data;
 
   packet->config.category = category;

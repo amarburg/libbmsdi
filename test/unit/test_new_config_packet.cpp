@@ -23,7 +23,7 @@ TEST(test_new_config_packet, test_inst_autofocus ) {
   const uint8_t answerlen = sizeof(answer);
   ASSERT_EQ( answerlen, align32(answerlen) );
 
-    BMSDIBuffer *packet = newConfigPacket( 4,
+    BMSDIBuffer *packet = bmNewConfigPacket( 4,
                               BM_CAT_LENS,
                               BM_PARAM_INST_AUTOFOCUS,
                               BM_OP_ASSIGN, BM_TYPE_VOID,
@@ -39,15 +39,14 @@ TEST(test_new_config_packet, test_ois_all_cameras ) {
   const uint8_t answerlen = sizeof(answer);
   ASSERT_EQ( answerlen, align32(answerlen) );
 
-  BMSDIBuffer *packet = newConfigPacket( 255,
+  BMSDIBuffer *packet = bmNewConfigPacket( 255,
                             BM_CAT_LENS,
                             BM_PARAM_OIS,
                             BM_OP_ASSIGN,
                             BM_TYPE_BOOLEAN,
                             1 );
-  BMSDIConfigPacket *config = (BMSDIConfigPacket *)packet->data;
 
-  config->payload[0] = 1;
+  bmConfigWriteInt8( packet, 1 );
 
   checkPacket( packet, answerlen, answer );
 }
@@ -60,16 +59,14 @@ TEST(test_new_config_packet, test_set_exposure_on_camera ) {
   const uint8_t answerlen = sizeof(answer);
   ASSERT_EQ( answerlen, align32(answerlen) );
 
-  BMSDIBuffer *packet = newConfigPacket( 4,
+  BMSDIBuffer *packet = bmNewConfigPacket( 4,
                             BM_CAT_VIDEO,
                             BM_PARAM_EXPOSURE_US,
                             BM_OP_ASSIGN,
                             BM_TYPE_INT32,
                             1 );
-  BMSDIConfigPacket *config = (BMSDIConfigPacket *)packet->data;
 
-  uint32_t *exposure = (uint32_t *)config->payload;
-  *exposure = 10000; // us
+  bmConfigWriteInt32( packet, 10000 );
 
   checkPacket( packet, answerlen, answer );
 }
