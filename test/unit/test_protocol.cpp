@@ -1,7 +1,7 @@
 
 #include <gtest/gtest.h>
 
-#include "libbm_sdi_camera_control/bmsdi.h"
+#include "libbmsdi/bmsdi.h"
 
 struct TestData {
     float f;
@@ -12,7 +12,7 @@ struct TestData {
 };
 
 
-// Test conversion
+// Test the float to fixed16 conversion
 TEST(test_fixed16, test) {
 
   for( unsigned long i = 0; i < (sizeof(testData)/sizeof(TestData)); ++i ) {

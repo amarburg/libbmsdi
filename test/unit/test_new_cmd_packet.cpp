@@ -1,7 +1,7 @@
 
 #include <gtest/gtest.h>
 
-#include "libbm_sdi_camera_control/bmsdi.h"
+#include "libbmsdi/bmsdi.h"
 
 TEST(test_new_cmd_packet, non_zero_length ) {
 

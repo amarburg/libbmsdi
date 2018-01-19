@@ -1,9 +1,8 @@
 
 #include <gtest/gtest.h>
 
-#include "libbm_sdi_camera_control/bmsdi.h"
-
-#include "libbm_sdi_camera_control/helpers.h"
+#include "libbmsdi/bmsdi.h"
+#include "libbmsdi/helpers.h"
 
 
 

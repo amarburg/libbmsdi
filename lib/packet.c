@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "libbm_sdi_camera_control/bmsdi.h"
+#include "libbmsdi/bmsdi.h"
 
 static uint8_t sizeOfType( uint8_t t ) {
   switch( t ) {
