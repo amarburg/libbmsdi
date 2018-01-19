@@ -11,7 +11,7 @@ TEST(test_new_cmd_packet, non_zero_length ) {
 
   const int packetlen = sizeof(BMSDIHeader) + cmdlen;
 
-  BMSDIBuffer *packet = bmNewCommandPacket( dest, cmdlen, cmd );
+  BMSDIBuffer *packet = bmNewPacket( dest, cmdlen, cmd );
 
   ASSERT_EQ( packet->len, align32(packetlen) );
 
@@ -19,7 +19,7 @@ TEST(test_new_cmd_packet, non_zero_length ) {
 
   ASSERT_EQ( p->header.dest, dest );
   ASSERT_EQ( p->header.cmd_id, cmd );
-  ASSERT_EQ( p->header.cmd_len, cmdlen);
+  ASSERT_EQ( p->header.cmd_len, 10 );
   ASSERT_EQ( p->header.reserved, 0 );
 
 }

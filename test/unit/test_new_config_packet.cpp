@@ -3,16 +3,27 @@
 
 #include "libbm_sdi_camera_control/bmsdi.h"
 
-static void checkPacket( BMSDIBuffer *packet, const uint8_t len, const uint8_t answer[] )
+
+
+static void checkPacket( BMSDIPacket *packet, const uint8_t len, const uint8_t answer[] )
 {
-  ASSERT_EQ( packet->len, len );
   ASSERT_EQ( len, align32(len) );
-  ASSERT_EQ( packet->len, align32(packet->len));
+
+  uint8_t *data = (uint8_t *)packet;
 
   for( int i = 0; i < len; ++i ) {
     //printf("%d  %x\n", i, packet->data[i]);
-    ASSERT_EQ( (uint8_t)packet->data[i], answer[i]);
+    ASSERT_EQ( data[i], answer[i]);
   }
+}
+
+// Shorthand for "check the first packet in the buffer"
+static void checkBuffer( BMSDIBuffer *buffer, const uint8_t len, const uint8_t answer[] )
+{
+  ASSERT_EQ( buffer->len, align32(buffer->len));
+  ASSERT_EQ( buffer->len, len );
+
+  checkPacket( (BMSDIPacket *)buffer->data, len, answer );
 }
 
 
@@ -22,13 +33,36 @@ TEST(test_new_config_packet, test_inst_autofocus ) {
 
   const uint8_t answer[] = {4, 4, 0, 0, 0, 1, 0, 0};
 
-    BMSDIBuffer *packet = bmNewConfigPacket( 4,
+  {
+    BMSDIBuffer *buffer = bmNewConfigPacket( 4,
                               BM_CAT_LENS,
                               BM_PARAM_INST_AUTOFOCUS,
                               BM_OP_ASSIGN, BM_TYPE_VOID,
                               0 );
 
-  checkPacket( packet, sizeof(answer), answer );
+    checkBuffer( buffer, sizeof(answer), answer );
+
+    free(buffer);
+  }
+
+  // Try this version
+  {
+    BMSDIBuffer *buffer = bmAllocBuffer();
+    BMSDIConfigPacket *packet = bmAddConfigPacket( buffer,
+                              4,
+                              BM_CAT_LENS,
+                              BM_PARAM_INST_AUTOFOCUS,
+                              BM_OP_ASSIGN, BM_TYPE_VOID,
+                              0 );
+
+    ASSERT_TRUE( packet != NULL );
+
+    // this also works because there's only one packet in the buffer
+    checkBuffer( buffer, sizeof(answer), answer );
+    checkPacket( (BMSDIPacket *)packet, sizeof(answer), answer );
+
+    free(buffer);
+}
 }
 
 // BM example "turn on OIS on all cameras"
@@ -36,16 +70,18 @@ TEST(test_new_config_packet, test_ois_all_cameras ) {
 
   const uint8_t answer[] = {255, 5, 0, 0, 0, 6, 0, 0, 1, 0, 0, 0};
 
-  BMSDIBuffer *packet = bmNewConfigPacket( 255,
+  BMSDIBuffer *buffer = bmNewConfigPacket( 255,
                             BM_CAT_LENS,
                             BM_PARAM_OIS,
                             BM_OP_ASSIGN,
                             BM_TYPE_BOOLEAN,
                             1 );
 
-  bmConfigWriteInt8( packet, 1 );
+  bmFirstConfigWriteInt8( buffer, 1 );
 
-  checkPacket( packet, sizeof(answer), answer );
+  checkBuffer( buffer, sizeof(answer), answer );
+
+  free(buffer);
 }
 
 // BM example "set exposure to 10 ms on camera 4 (10 ms = 10000
@@ -54,16 +90,18 @@ TEST(test_new_config_packet, test_set_exposure_on_camera ) {
 
   const uint8_t answer[] = {4, 8, 0, 0, 1, 5, 3, 0, 0x10, 0x27, 0x0, 0};
 
-  BMSDIBuffer *packet = bmNewConfigPacket( 4,
+  BMSDIBuffer *buffer = bmNewConfigPacket( 4,
                             BM_CAT_VIDEO,
                             BM_PARAM_EXPOSURE_US,
                             BM_OP_ASSIGN,
                             BM_TYPE_INT32,
                             1 );
 
-  bmConfigWriteInt32( packet, 10000 );
+  bmFirstConfigWriteInt32( buffer, 10000 );
 
-  checkPacket( packet, sizeof(answer), answer );
+  checkBuffer( buffer, sizeof(answer), answer );
+
+  free(buffer);
 }
 
 
@@ -73,14 +111,14 @@ TEST(test_new_config_packet, test_increment_zebra_level ) {
   const uint8_t answer[] = {4, 6, 0, 0, 4, 2, 128, 1, 0x33, 0x01, 0, 0};
 
 
-  BMSDIBuffer *packet = bmNewConfigPacket( 4,
+  BMSDIBuffer *buffer = bmNewConfigPacket( 4,
                             BM_CAT_DISPLAY,
                             BM_PARAM_ZEBRA_LEVEL,
                             BM_OP_OFFSET,
                             BM_TYPE_FIXED16,
                             1 );
 
-  bmConfigWriteFixed32( packet, 0.15 );
+  bmFirstConfigWriteFixed32( buffer, 0.15 );
 
-  checkPacket( packet, sizeof(answer), answer );
+  checkBuffer( buffer, sizeof(answer), answer );
 }

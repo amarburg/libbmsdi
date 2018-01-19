@@ -16,7 +16,7 @@ inline BMSDIBuffer *bmInstantaneousFocus( uint8_t dest, float focus ) {
                                 BM_TYPE_FIXED16,
                                 0 );
 
-  bmConfigWriteFixed32( buffer, focus );
+  bmFirstConfigWriteFixed32( buffer, focus );
 
   return buffer;
 }
