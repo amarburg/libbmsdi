@@ -13,7 +13,7 @@ struct TestData {
 
 
 // Test the float to fixed16 conversion
-TEST(test_fixed16, test) {
+TEST(TestFixed16, test) {
 
   for( unsigned long i = 0; i < (sizeof(testData)/sizeof(TestData)); ++i ) {
     int16_t c = floatToFixed16( testData[i].f );

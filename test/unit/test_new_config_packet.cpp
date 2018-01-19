@@ -30,7 +30,7 @@ static void checkBuffer( BMSDIBuffer *buffer, const uint8_t len, const uint8_t a
 
 // Based on BM's example "trigger instantaneous auto focus
 // on camera 4"
-TEST(test_new_config_packet, test_inst_autofocus ) {
+TEST(TestNewConfigPacket, TestInstAutofocus ) {
 
   const uint8_t camAddr = 4;
   const uint8_t answer[] = {4, 4, 0, 0, 0, 1, 0, 0};
@@ -97,7 +97,7 @@ TEST(test_new_config_packet, test_inst_autofocus ) {
 }
 
 // BM example "turn on OIS on all cameras"
-TEST(test_new_config_packet, test_ois_all_cameras ) {
+TEST(TestNewConfigPacket, TestOISAllCameras ) {
 
   const uint8_t answer[] = {255, 5, 0, 0, 0, 6, 0, 0, 1, 0, 0, 0};
 
@@ -117,7 +117,7 @@ TEST(test_new_config_packet, test_ois_all_cameras ) {
 
 // BM example "set exposure to 10 ms on camera 4 (10 ms = 10000
 //us = 0x00002710)"
-TEST(test_new_config_packet, test_set_exposure_on_camera ) {
+TEST(TestNewConfigPacket, TestSetExposureOnCamera ) {
 
   const uint8_t answer[] = {4, 8, 0, 0, 1, 5, 3, 0, 0x10, 0x27, 0x0, 0};
 
@@ -137,7 +137,7 @@ TEST(test_new_config_packet, test_set_exposure_on_camera ) {
 
 
 // BM example "dd 15% to zebra level (15 % = 0.15 f = 0x0133 fp)"
-TEST(test_new_config_packet, test_increment_zebra_level ) {
+TEST(TestNewConfigPacket, TestIncremenetZebraLevel ) {
 
   const uint8_t answer[] = {4, 6, 0, 0, 4, 2, 128, 1, 0x33, 0x01, 0, 0};
 
