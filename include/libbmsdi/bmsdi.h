@@ -20,7 +20,7 @@ struct BMSDIHeader {
   uint8_t dest;
   uint8_t cmd_len;
   uint8_t cmd_id;
-  uint8_t reserved;
+  uint8_t reserved; // Always 0
 };
 
 struct BMSDIPacket {
@@ -51,7 +51,7 @@ struct BMSDIConfigPacket {
 // Core functions
 
 // "Rounds up" to nearest multiple of 4 (aka 32 bits)
-inline uint32_t align32( uint8_t x ) { return ((x + 3) & ~0x03); }
+uint32_t align32( uint8_t x ); 
 
 
 // These are the one-shot versions

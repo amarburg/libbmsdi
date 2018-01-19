@@ -23,6 +23,11 @@ static uint8_t sizeOfType( uint8_t t ) {
   }
 }
 
+uint32_t align32( uint8_t x )
+{
+ return ((x + 3) & ~0x03);
+}
+
 
 static void bmInitCommandPacket( struct BMSDIPacket *packet,
                                   uint8_t dest, uint8_t len, uint8_t cmd )
