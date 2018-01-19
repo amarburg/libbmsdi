@@ -7,7 +7,7 @@ gtest_begin( bmsdi )
       test_new_config_packet.cpp
       test_new_config_helpers.cpp
     )
-    fips_deps( bm_sdi_camera_control )
+    fips_deps( bmsdi )
 
     include_directories( ${TEST_DATA_DIR} )
 gtest_end()

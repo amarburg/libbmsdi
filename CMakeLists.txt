@@ -3,7 +3,7 @@ if( NOT FIPS_IMPORT )
 	get_filename_component(FIPS_ROOT_DIR "../fips" ABSOLUTE)
 	include("${FIPS_ROOT_DIR}/cmake/fips.cmake")
 
-	fips_setup(PROJECT libbm_sdi_camera_control)
+	fips_setup(PROJECT libbmsdi)
 endif()
 
 

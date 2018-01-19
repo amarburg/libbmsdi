@@ -6,7 +6,7 @@ exports:
   header-dirs:
     - include/
   modules:
-    bm_sdi_camera_control: .
+    bmsdi: .
 
 defines:
   FIPS_RTTI: true
