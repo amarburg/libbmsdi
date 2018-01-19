@@ -18,8 +18,7 @@ static void checkPacket( BMSDIPacket *packet, const uint8_t len, const uint8_t a
   }
 }
 
-// Shorthand for "check the first packet in the buffer"
-static void checkBuffer( BMSDIBuffer *buffer, const uint8_t len, const uint8_t answer[] )
+static void checkFirstPacketInBuffer( BMSDIBuffer *buffer, const uint8_t len, const uint8_t answer[] )
 {
   ASSERT_EQ( buffer->len, align32(buffer->len));
   ASSERT_EQ( buffer->len, len );
@@ -42,7 +41,7 @@ TEST(TestNewConfigPacket, TestInstAutofocus ) {
                               BM_OP_ASSIGN, BM_TYPE_VOID,
                               0 );
 
-    checkBuffer( buffer, sizeof(answer), answer );
+    checkFirstPacketInBuffer( buffer, sizeof(answer), answer );
 
     free(buffer);
   }
@@ -60,7 +59,7 @@ TEST(TestNewConfigPacket, TestInstAutofocus ) {
     ASSERT_TRUE( packet != NULL );
 
     // this also works because there's only one packet in the buffer
-    checkBuffer( buffer, sizeof(answer), answer );
+    checkFirstPacketInBuffer( buffer, sizeof(answer), answer );
     checkPacket( (BMSDIPacket *)packet, sizeof(answer), answer );
 
     free(buffer);
@@ -73,7 +72,7 @@ TEST(TestNewConfigPacket, TestInstAutofocus ) {
     ASSERT_TRUE( buffer != NULL );
 
     // this also works because there's only one packet in the buffer
-    checkBuffer( buffer, sizeof(answer), answer );
+    checkFirstPacketInBuffer( buffer, sizeof(answer), answer );
 
     free(buffer);
   }
@@ -88,7 +87,7 @@ TEST(TestNewConfigPacket, TestInstAutofocus ) {
     ASSERT_TRUE( packet != NULL );
 
     // this also works because there's only one packet in the buffer
-    checkBuffer( buffer, sizeof(answer), answer );
+    checkFirstPacketInBuffer( buffer, sizeof(answer), answer );
     checkPacket( (BMSDIPacket *)packet, sizeof(answer), answer );
 
     free(buffer);
@@ -110,7 +109,7 @@ TEST(TestNewConfigPacket, TestOISAllCameras ) {
 
   bmFirstConfigWriteInt8( buffer, 1 );
 
-  checkBuffer( buffer, sizeof(answer), answer );
+  checkFirstPacketInBuffer( buffer, sizeof(answer), answer );
 
   free(buffer);
 }
@@ -130,7 +129,7 @@ TEST(TestNewConfigPacket, TestSetExposureOnCamera ) {
 
   bmFirstConfigWriteInt32( buffer, 10000 );
 
-  checkBuffer( buffer, sizeof(answer), answer );
+  checkFirstPacketInBuffer( buffer, sizeof(answer), answer );
 
   free(buffer);
 }
@@ -151,5 +150,5 @@ TEST(TestNewConfigPacket, TestIncremenetZebraLevel ) {
 
   bmFirstConfigWriteFixed32( buffer, 0.15 );
 
-  checkBuffer( buffer, sizeof(answer), answer );
+  checkFirstPacketInBuffer( buffer, sizeof(answer), answer );
 }
