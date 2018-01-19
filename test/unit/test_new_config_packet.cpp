@@ -31,10 +31,11 @@ static void checkBuffer( BMSDIBuffer *buffer, const uint8_t len, const uint8_t a
 // on camera 4"
 TEST(test_new_config_packet, test_inst_autofocus ) {
 
+  const uint8_t camAddr = 4;
   const uint8_t answer[] = {4, 4, 0, 0, 0, 1, 0, 0};
 
   {
-    BMSDIBuffer *buffer = bmNewConfigPacket( 4,
+    BMSDIBuffer *buffer = bmNewConfigPacket( camAddr,
                               BM_CAT_LENS,
                               BM_PARAM_INST_AUTOFOCUS,
                               BM_OP_ASSIGN, BM_TYPE_VOID,
@@ -49,7 +50,7 @@ TEST(test_new_config_packet, test_inst_autofocus ) {
   {
     BMSDIBuffer *buffer = bmAllocBuffer();
     BMSDIConfigPacket *packet = bmAddConfigPacket( buffer,
-                              4,
+                              camAddr,
                               BM_CAT_LENS,
                               BM_PARAM_INST_AUTOFOCUS,
                               BM_OP_ASSIGN, BM_TYPE_VOID,
@@ -62,7 +63,36 @@ TEST(test_new_config_packet, test_inst_autofocus ) {
     checkPacket( (BMSDIPacket *)packet, sizeof(answer), answer );
 
     free(buffer);
-}
+  }
+
+  // Try this version
+  {
+    BMSDIBuffer *buffer = bmNewInstantaneousAutofocus( buffer, camAddr );
+
+    ASSERT_TRUE( buffer != NULL );
+
+    // this also works because there's only one packet in the buffer
+    checkBuffer( buffer, sizeof(answer), answer );
+
+    free(buffer);
+  }
+
+  // Try this version
+  {
+    BMSDIBuffer *buffer = bmAllocBuffer();
+    ASSERT_TRUE( buffer != NULL );
+
+    BMSDIConfigPacket *packet = bmAddInstantaneousAutofocus( buffer, camAddr );
+
+    ASSERT_TRUE( packet != NULL );
+
+    // this also works because there's only one packet in the buffer
+    checkBuffer( buffer, sizeof(answer), answer );
+    checkPacket( (BMSDIPacket *)packet, sizeof(answer), answer );
+
+    free(buffer);
+  }
+
 }
 
 // BM example "turn on OIS on all cameras"
