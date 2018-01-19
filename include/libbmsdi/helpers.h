@@ -12,25 +12,25 @@ extern "C" {
 // the arguments to some of the commands in the BM SDK.
 
 
-inline BMSDIBuffer *bmInstantaneousFocus( uint8_t dest, float focus ) {
+inline BMSDIBuffer *bmFocus( uint8_t dest, float focus ) {
   BMSDIBuffer *buffer = bmNewConfigPacket( dest, BM_CAT_LENS,
                                 BM_PARAM_FOCUS,
                                 BM_OP_ASSIGN,
                                 BM_TYPE_FIXED16,
-                                0 );
+                                1 );
 
   bmFirstConfigWriteFixed32( buffer, focus );
 
   return buffer;
 }
 
-inline bool bmAddInstantaneousFocus( BMSDIBuffer *buffer, uint8_t dest, float focus ) {
+inline bool bmAddFocus( BMSDIBuffer *buffer, uint8_t dest, float focus ) {
   BMSDIConfigPacket *config = bmAddConfigPacket( buffer,
                                 dest, BM_CAT_LENS,
                                 BM_PARAM_FOCUS,
                                 BM_OP_ASSIGN,
                                 BM_TYPE_FIXED16,
-                                0 );
+                                1 );
   if( !buffer ) return false;
 
   bmConfigWriteFixed32( config, focus );
@@ -55,6 +55,21 @@ inline bool bmAddInstantaneousFocus( BMSDIBuffer *buffer, uint8_t dest, float fo
                                   0 );
   }
 
+
+
+
+  // Helpers for category 6 "Reference"
+  inline BMSDIBuffer *bmReferenceSource( uint8_t dest, uint8_t i ) {
+    BMSDIBuffer *buffer = bmNewConfigPacket( dest, BM_CAT_REFERENCE,
+                                  BM_PARAM_REF_SOURCE,
+                                  BM_OP_ASSIGN,
+                                  BM_TYPE_INT8,
+                                  1 );
+
+    bmFirstConfigWriteInt8( buffer, i );
+
+    return buffer;
+  }
 
 #ifdef __cplusplus
 }
