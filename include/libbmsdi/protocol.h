@@ -1,9 +1,29 @@
 #pragma once
 
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+// Constants for the various fields in the BM SDI Camera Control Protocol
+
+// Every message packet consist of a three byte header followed by an
+// optional variable length data block.  The maximum packet size is 64 bytes
+//
+// Up to 32 messages may be concatenated and transmitted in one blanking
+// packet up to a maximum of 255 bytes payload. Under most circumstances,
+// this should allow all messages to be sent with a maximum of one frame
+// latency.
+//
+// Format:
+//
+//   [0]    Destination device (uint8)
+//   [1]    Command length (unit8).  Does not in clude header or trailing padding bytes
+//   [2]    Command id (uint8)
+//   [3]    reserved
+//   [*]    Command data (uint[])
+//   [*]    Padding.  Messages must be padded to a 32bit boundary with 0x0 bytes
 
 
 #define BM_CMD_CONFIG    0      // Command 0:  Change configuration
@@ -36,6 +56,10 @@ inline int16_t floatToFixed16( float i )
 {
   return (i * (0x01<<11));
 }
+
+// "Rounds up" to nearest multiple of 4 (aka 32 bits)
+uint32_t align32( uint8_t x );
+uint8_t sizeOfType( uint8_t t );
 
 
 // Configuration categories
@@ -129,7 +153,6 @@ inline int16_t floatToFixed16( float i )
 
 // Parameters for category 11 "PTZ Control"
 // ...
-
 
 
 #ifdef __cplusplus

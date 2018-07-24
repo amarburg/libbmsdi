@@ -1,21 +1,24 @@
-From _"Installation and Operation Manual;
-Blackmagic Studio Cameras; November 2017"_
+= Notes on the Blackmagic SDI Camera Control Protocol
 
-= Assumptions
+From _"Installation and Operation Manual; Blackmagic Studio Cameras; November 2017"_
+
+Important to remember this protocol is used for data _to_ the camera.
+
+== Assumptions
 
 Alignment and padding constraints are explicitly described in the protocol document. Bit fields are packed from LSB first. Message groups, individual messages and command headers are defined as, and can be assumed to be, 32 bit aligned.
 
-= Blanking Encoding
+== Blanking Encoding
 
 A message group is encoded into a SMPTE 291M packet with DID/SDID x51/x53 in the active region of VANC line 16.
 
-= Message Grouping
+== Message Grouping
 
 Up to 32 messages may be concatenated and transmitted in one blanking packet up to a maximum of 255 bytes payload. Under most circumstances, this should allow all messages to be sent with a maximum of one frame latency.
 
 If the transmitting device queues more bytes of message packets than can be sent in a single frame, it should use heuristics to determine which packets to prioritize and send immediately. Lower priority messages can be delayed to later frames, or dropped entirely as appropriate.
 
-= Abstract Message Packet Format
+== Abstract Message Packet Format
 
 Every message packet consists of a three byte header followed by an optional variable length data block. The maximum packet size is 64 bytes.
 

@@ -44,13 +44,14 @@ set( BMSDI_INCLUDE_DIRS
  	${CMAKE_CURRENT_SOURCE_DIR}/include )
 include_directories( ${BMSDI_INCLUDE_DIRS} )
 
-fips_add_subdirectory("lib/")
+#
+fips_begin_module( bmsdi )
+  fips_src( lib/ )
+fips_end_module()
 
 if( NOT FIPS_IMPORT )
-	# set( TEST_DATA_DIR "${CMAKE_CURRENT_SOURCE_DIR}/test/data" )
-	# add_definitions( -DTEST_DATA_DIR="${TEST_DATA_DIR}" )
 
-	#fips_add_subdirectory("tools/")
+	fips_add_subdirectory("apps/")
 
 	if( FIPS_UNITTESTS )
 	  fips_add_subdirectory( test/unit/ )

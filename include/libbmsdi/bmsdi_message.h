@@ -4,7 +4,6 @@
 #include <stdbool.h>
 
 #include "protocol.h"
-#include "datatypes.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -31,7 +30,7 @@ struct BMSDIHeader {
 };
 
 struct BMSDIConfigData {
-  struct {
+  struct BMSDIConfigHeader {
     uint8_t category;
     uint8_t parameter;
     uint8_t datatype;
@@ -42,7 +41,7 @@ struct BMSDIConfigData {
 
 // Generic packet consisting of header and payload
 struct BMSDIMessage {
-  int msgLen;
+  int len;
 
   union {
     char raw[MAX_MESSAGE_LEN];
@@ -78,11 +77,11 @@ struct BMSDIMessage *bmNewConfigMessage( uint8_t dest, uint8_t category, uint8_t
 #define DefineWriteFunctions( name, type ) \
   inline void bmConfigWrite##name##At( struct BMSDIMessage *msg, int i, type d ) \
   { \
-    ((type *)msg->message.config.bytes[i]) = d; \
+    ((type *)msg->message.config.bytes)[i] = d; \
   } \
   inline void bmConfigWrite##name( struct BMSDIMessage *msg, type d ) \
   {  \
-    bmConfigWriteAt##nameAt( packet, 0, d ); \
+    bmConfigWrite##name##At( msg, 0, d ); \
   }
 
 DefineWriteFunctions( Boolean, uint8_t )
@@ -92,14 +91,14 @@ DefineWriteFunctions( Int32, uint32_t )
 DefineWriteFunctions( Int64, uint64_t )
 
 // Specialized versions for dealing with Fixed32 types
-inline void bmConfigWriteAtFixed16( struct BMSDIConfigPacket *packet, int i, float f )
+inline void bmConfigWriteFixed16At( struct BMSDIMessage *msg, int i, float f )
 {
-  ((int16_t *)msg->message.config.bytes[i]) = floatToFixed16(f);
+  ((int16_t *)msg->message.config.bytes)[i] = floatToFixed16(f);
 }
 
-inline void bmConfigWriteFixed16( struct BMSDIConfigPacket *packet, float f )
+inline void bmConfigWriteFixed16( struct BMSDIMessage *msg, float f )
 {
-  bmConfigWriteAtFixed16( packet, 0, f );
+  bmConfigWriteFixed16At( msg, 0, f );
 }
 
 #ifdef __cplusplus

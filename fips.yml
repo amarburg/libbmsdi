@@ -10,3 +10,4 @@ exports:
 
 defines:
   FIPS_RTTI: true
+  FIPS_UNITTESTS_RUN_AFTER_BUILD: true

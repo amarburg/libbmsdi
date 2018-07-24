@@ -1,9 +1,9 @@
 
 #include <gtest/gtest.h>
 
-#include "libbmsdi/bmsdi.h"
+#include "libbmsdi/bmsdi_message.h"
 
-struct TestData {
+struct Fixed16TestData {
     float f;
     int16_t d;
 } testData[] = {
@@ -13,9 +13,9 @@ struct TestData {
 
 
 // Test the float to fixed16 conversion
-TEST(TestFixed16, test) {
+TEST(TestFixed16Conversions, floatToFixed16) {
 
-  for( unsigned long i = 0; i < (sizeof(testData)/sizeof(TestData)); ++i ) {
+  for( unsigned long i = 0; i < (sizeof(testData)/sizeof(Fixed16TestData)); ++i ) {
     int16_t c = floatToFixed16( testData[i].f );
 
     ASSERT_NEAR( c, testData[i].d, 1 );

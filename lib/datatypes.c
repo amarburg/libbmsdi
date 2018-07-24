@@ -1,9 +1,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "libbmsdi/datatypes.h"
+#include "libbmsdi/protocol.h"
 
-static uint8_t sizeOfType( uint8_t t ) {
+uint8_t sizeOfType( uint8_t t ) {
   switch( t ) {
   case BM_TYPE_BOOLEAN:
   case BM_TYPE_INT8:
