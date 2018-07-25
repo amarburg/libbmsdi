@@ -1,8 +1,15 @@
 = Notes on the Blackmagic SDI Camera Control Protocol
 
-From _"Installation and Operation Manual; Blackmagic Studio Cameras; November 2017"_
+Functions and data types for the Blackmagic SDI camera control protocol.
+This library deals strictly with assembling the message buffers, not with
+putting the data out to the camera --- as such it does not require the
+Blackmagic API.
 
 Important to remember this protocol is used for data _to_ the camera.
+
+
+From _"Installation and Operation Manual; Blackmagic Studio Cameras; November 2017"_
+
 
 == Assumptions
 
