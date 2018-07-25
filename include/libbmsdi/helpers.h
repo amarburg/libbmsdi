@@ -28,6 +28,18 @@ inline BMSDIBuffer *bmFocus( uint8_t dest, float focus ) {
   return bmAddFocus( bmNewBuffer(), dest, focus );
 }
 
+// Message 0.0:  Increment focus
+inline BMSDIBuffer *bmAddFocusOffset( BMSDIBuffer *buffer, uint8_t dest, float inc ) {
+  BMSDIMessage *msg = bmAddConfigMessage( buffer, dest, BM_CAT_LENS,
+                                          BM_PARAM_FOCUS,
+                                          BM_OP_OFFSET,
+                                          BM_TYPE_FIXED16,
+                                          1 );
+  bmConfigWriteFixed16( msg, inc );
+
+  return (msg ? buffer : NULL);
+}
+
 
 
 // Message 0.1:  Instantantaneous Autofocus
