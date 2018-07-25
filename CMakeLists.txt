@@ -45,7 +45,7 @@ set( BMSDI_INCLUDE_DIRS
 include_directories( ${BMSDI_INCLUDE_DIRS} )
 
 #
-fips_begin_module( bmsdi )
+fips_begin_module( bmsdi_protocol )
   fips_src( lib/ )
 fips_end_module()
 
