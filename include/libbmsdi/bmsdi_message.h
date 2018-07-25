@@ -49,6 +49,9 @@ struct BMSDIConfigMsg {
 // Generic packet consisting of header and payload
 struct BMSDIMessage {
   struct BMSDIHeader header;
+
+  // Setting this as a Union open the possibility of other message types
+  // though Config messages are the only choice right now
   union {
     char bytes[MAX_PAYLOAD_LEN];
     struct BMSDIConfigMsg config;
@@ -61,10 +64,11 @@ struct BMSDIMessage {
 struct BMSDIBuffer *bmNewBuffer();
 struct BMSDIMessage *bmAddMessage( struct BMSDIBuffer *buffer,
                                   uint8_t dest, uint8_t len, uint8_t cmd);
-
 struct BMSDIMessage *bmAddConfigMessage( struct BMSDIBuffer *buffer,
                                         uint8_t dest, uint8_t category, uint8_t parameter,
                                         uint8_t op,   uint8_t dataType, uint8_t count );
+
+struct BMSDIMessage *bmMessageAt( struct BMSDIBuffer *buffer, int idx );
 
 void bmResetBuffer( struct BMSDIBuffer *buffer );
 

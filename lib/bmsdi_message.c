@@ -37,7 +37,6 @@ struct BMSDIMessage *bmAddMessage( struct BMSDIBuffer *buffer,
   msg->header.reserved = 0;
 
   return msg;
-
 }
 
 struct BMSDIMessage *bmAddConfigMessage( struct BMSDIBuffer *buffer,
@@ -55,4 +54,23 @@ struct BMSDIMessage *bmAddConfigMessage( struct BMSDIBuffer *buffer,
   msg->config.header.operation = op;
 
   return msg;
+}
+
+// Bearing in mind there's no way to know if a message is valid other than
+// inspecting its contents
+struct BMSDIMessage *bmMessageAt( struct BMSDIBuffer *buffer, int idx )
+{
+  int offset = 0, count = 0;
+
+  while( offset < MAX_BUFFER_LEN ) {
+    struct BMSDIMessage *msg = (void *)&(buffer->data[offset]);
+
+    if( idx == count ) return msg;
+
+    // Else advance
+    offset += align32( sizeof(struct BMSDIHeader) + msg->header.cmd_len);
+    ++count;
+  }
+
+  return NULL;
 }

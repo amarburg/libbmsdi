@@ -8,7 +8,7 @@
 
 static void checkMessage( BMSDIMessage *msg, const uint8_t len, const uint8_t answer[] )
 {
-  ASSERT_EQ( len, align32(len) );
+  //ASSERT_EQ( len, align32(len) );
 
   uint8_t *data = (uint8_t *)msg;
 
@@ -17,14 +17,12 @@ static void checkMessage( BMSDIMessage *msg, const uint8_t len, const uint8_t an
   }
 }
 
-static void checkMessageInBuffer( BMSDIBuffer *buffer, int id, const uint8_t len, const uint8_t answer[] )
+static void checkMessageInBuffer( BMSDIBuffer *buffer, int idx, const uint8_t len, const uint8_t answer[] )
 {
-  // Add code to walk through buffer to find id'th message in buffer
-  ASSERT_EQ(id, 0);
+  BMSDIMessage *msg = bmMessageAt(buffer,idx);
+  ASSERT_TRUE(msg != NULL);
 
-  // TODO  Add capacity to walk through a buffer
-
-  checkMessage( (struct BMSDIMessage *)buffer->data, len, answer );
+  checkMessage( msg, len, answer );
 }
 
 
@@ -33,23 +31,23 @@ static void checkMessageInBuffer( BMSDIBuffer *buffer, int id, const uint8_t len
 TEST(TestConfigMessage, TestInstAutofocus ) {
 
   const uint8_t camAddr = 4;
-  const uint8_t answer[] = {camAddr, 4, 0, 0, 0, 1, 0, 0};
+  const uint8_t afMsg[] = {camAddr, 4, 0, 0, 0, 1, 0, 0};
 
   // Test message in packet
   {
     BMSDIBuffer *buffer = bmNewBuffer();
-    BMSDIMessage *msg = bmAddConfigMessage( buffer,
-                                            camAddr,
-                                            BM_CAT_LENS,
-                                            BM_PARAM_INST_AUTOFOCUS,
-                                            BM_OP_ASSIGN, BM_TYPE_VOID,
-                                            0 );
+    bmAddConfigMessage( buffer,
+                        camAddr,
+                        BM_CAT_LENS,
+                        BM_PARAM_INST_AUTOFOCUS,
+                        BM_OP_ASSIGN, BM_TYPE_VOID,
+                        0 );
 
     ASSERT_EQ( buffer->len, align32(buffer->len));
-    ASSERT_EQ( buffer->len, sizeof(answer) );
+    ASSERT_EQ( buffer->len, sizeof(afMsg) );
 
     // this also works because there's only one packet in the buffer
-    checkMessageInBuffer( buffer, 0, sizeof(answer), answer );
+    checkMessageInBuffer( buffer, 0, sizeof(afMsg), afMsg );
 
     free(buffer);
   }
@@ -61,7 +59,7 @@ TEST(TestConfigMessage, TestInstAutofocus ) {
     ASSERT_TRUE( buffer != NULL );
 
     // this also works because there's only one packet in the buffer
-    checkMessageInBuffer( buffer, 0, sizeof(answer), answer );
+    checkMessageInBuffer( buffer, 0, sizeof(afMsg), afMsg );
 
     free(buffer);
   }
@@ -74,11 +72,77 @@ TEST(TestConfigMessage, TestInstAutofocus ) {
     ASSERT_TRUE( buffer != NULL );
 
     // this also works because there's only one packet in the buffer
-    checkMessageInBuffer( buffer, 0, sizeof(answer), answer );
+    checkMessageInBuffer( buffer, 0, sizeof(afMsg), afMsg );
 
     free(buffer);
   }
 
+  // Define a another message which we can combine into a multi-message packet
+
+  // Defines a focus=0.0 request
+  const uint8_t focusMsg[] = {camAddr, 6, 0, 0, 0, 0, 128, 0, 0, 0};
+  // Try this helper
+  {
+    BMSDIBuffer *buffer = bmFocus( camAddr, 0.0 );
+
+    ASSERT_TRUE( buffer != NULL );
+
+    // this also works because there's only one packet in the buffer
+    checkMessageInBuffer( buffer, 0, sizeof(focusMsg), focusMsg );
+
+    free(buffer);
+  }
+
+  // Stack two requests
+  {
+    BMSDIBuffer *buffer = bmInstantaneousAutofocus( camAddr );
+    ASSERT_TRUE( buffer != NULL );
+
+    bmAddFocus( buffer, camAddr, 0.0 );
+
+    // this also works because there's only one packet in the buffer
+    checkMessageInBuffer( buffer, 0, sizeof(afMsg), afMsg );
+    checkMessageInBuffer( buffer, 1, sizeof(focusMsg), focusMsg );
+
+    free(buffer);
+  }
+
+  // Stack two requests
+  {
+    BMSDIBuffer *buffer = bmInstantaneousAutofocus( camAddr );
+    ASSERT_TRUE( buffer != NULL );
+
+    bmAddFocus( buffer, camAddr, 0.0 );
+
+    // this also works because there's only one packet in the buffer
+    checkMessageInBuffer( buffer, 0, sizeof(afMsg), afMsg );
+    checkMessageInBuffer( buffer, 1, sizeof(focusMsg), focusMsg );
+
+    free(buffer);
+  }
+
+  {
+    BMSDIBuffer *buffer = bmNewBuffer();
+
+    int msgSize = align32( sizeof(afMsg) );
+    int count = 0;
+
+    for( ; ((count+1)*msgSize) < MAX_BUFFER_LEN; count++ ) {
+      // These should all succeed
+      struct BMSDIBuffer *result = bmAddInstantaneousAutofocus( buffer, camAddr );
+      ASSERT_TRUE( result != NULL );
+    }
+
+    // This one will fail
+    struct BMSDIBuffer *result = bmAddInstantaneousAutofocus( buffer, camAddr );
+    ASSERT_TRUE( result == NULL );
+
+    for( int i = 0; i < (count-1); i++ ) {
+      checkMessageInBuffer( buffer, i, sizeof(afMsg), afMsg );
+    }
+
+    free(buffer);
+  }
 
 }
 

@@ -14,14 +14,14 @@ extern "C" {
 // Message 0.0:  Set focus
 inline BMSDIBuffer *bmAddFocus( BMSDIBuffer *buffer, uint8_t dest, float focus ) {
   BMSDIMessage *msg = bmAddConfigMessage( buffer,
-                                dest, BM_CAT_LENS,
-                                BM_PARAM_FOCUS,
-                                BM_OP_ASSIGN,
-                                BM_TYPE_FIXED16,
-                                1 );
+                                          dest, BM_CAT_LENS,
+                                          BM_PARAM_FOCUS,
+                                          BM_OP_ASSIGN,
+                                          BM_TYPE_FIXED16,
+                                          1 );
   bmConfigWriteFixed16( msg, focus );
 
-  return buffer;
+  return (msg ? buffer : NULL);
 }
 
 inline BMSDIBuffer *bmFocus( uint8_t dest, float focus ) {
@@ -33,10 +33,10 @@ inline BMSDIBuffer *bmFocus( uint8_t dest, float focus ) {
 // Message 0.1:  Instantantaneous Autofocus
 inline BMSDIBuffer *bmAddInstantaneousAutofocus( BMSDIBuffer *buffer, uint8_t dest ) {
   BMSDIMessage *msg = bmAddConfigMessage( buffer, dest, BM_CAT_LENS,
-                                BM_PARAM_INST_AUTOFOCUS,
-                                BM_OP_ASSIGN, BM_TYPE_VOID,
-                                0 );
-  return buffer;
+                                          BM_PARAM_INST_AUTOFOCUS,
+                                          BM_OP_ASSIGN, BM_TYPE_VOID,
+                                          0 );
+  return (msg ? buffer : NULL);
 }
 
 inline BMSDIBuffer *bmInstantaneousAutofocus( uint8_t dest ) {
