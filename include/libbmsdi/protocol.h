@@ -57,11 +57,6 @@ inline int16_t floatToFixed16( float i )
   return (i * (0x01<<11));
 }
 
-// "Rounds up" to nearest multiple of 4 (aka 32 bits)
-uint32_t align32( uint8_t x );
-uint8_t sizeOfType( uint8_t t );
-
-
 // Configuration categories
 #define BM_CAT_LENS       0
 #define BM_CAT_VIDEO      1

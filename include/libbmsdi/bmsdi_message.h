@@ -12,8 +12,15 @@ extern "C" {
 #define MAX_BUFFER_LEN   (255)
 
 #define MAX_MESSAGE_LEN  (64)
-#define MAX_PAYLOAD_LEN  (MAX_MESSAGE_LEN-4)
-#define MAX_COMMAND_DATA (MAX_MESSAGE_LEN-8)
+#define MESSAGE_HEADER_LEN (4)
+#define MAX_PAYLOAD_LEN  (MAX_MESSAGE_LEN-MESSAGE_HEADER_LEN)
+
+#define COMMAND_HEADER_LEN (4)
+#define MAX_COMMAND_DATA (MAX_PAYLOAD_LEN-COMMAND_HEADER_LEN)
+
+// "Rounds up" to nearest multiple of 4 (aka 32 bits)
+uint32_t align32( uint8_t x );
+uint8_t sizeOfType( uint8_t t );
 
 // Generic buffer
 struct BMSDIBuffer {
@@ -29,7 +36,7 @@ struct BMSDIHeader {
   uint8_t reserved; // Always 0
 };
 
-struct BMSDIConfigData {
+struct BMSDIConfigMsg {
   struct BMSDIConfigHeader {
     uint8_t category;
     uint8_t parameter;
@@ -41,18 +48,10 @@ struct BMSDIConfigData {
 
 // Generic packet consisting of header and payload
 struct BMSDIMessage {
-  int len;
-
+  struct BMSDIHeader header;
   union {
-    char raw[MAX_MESSAGE_LEN];
-
-    struct {
-      struct BMSDIHeader header;
-      union {
-        struct BMSDIConfigData config;
-        char bytes[MAX_PAYLOAD_LEN];
-      };
-    } message;
+    char bytes[MAX_PAYLOAD_LEN];
+    struct BMSDIConfigMsg config;
   };
 };
 
@@ -60,14 +59,15 @@ struct BMSDIMessage {
 
 // Function for manipulating buffers
 struct BMSDIBuffer *bmNewBuffer();
-struct BMSDIBuffer *bmNewMessageBuffer(struct BMSDIMessage *msg);
-void bmResetBuffer( struct BMSDIBuffer *buffer );
-int bmAddMessage( struct BMSDIBuffer *buffer, struct BMSDIMessage *msg );
+struct BMSDIMessage *bmAddMessage( struct BMSDIBuffer *buffer,
+                                  uint8_t dest, uint8_t len, uint8_t cmd);
 
-// Generate a new BMSDIMessage.
-struct BMSDIMessage *bmNewMessage( uint8_t dest, uint8_t len, uint8_t cmd );
-struct BMSDIMessage *bmNewConfigMessage( uint8_t dest, uint8_t category, uint8_t parameter,
+struct BMSDIMessage *bmAddConfigMessage( struct BMSDIBuffer *buffer,
+                                        uint8_t dest, uint8_t category, uint8_t parameter,
                                         uint8_t op,   uint8_t dataType, uint8_t count );
+
+void bmResetBuffer( struct BMSDIBuffer *buffer );
+
 
 // struct BMSDIConfigPacket *bmAddConfigPacket( struct BMSDIBuffer *buffer,
 //                                       uint8_t dest, uint8_t category, uint8_t parameter,
@@ -77,7 +77,7 @@ struct BMSDIMessage *bmNewConfigMessage( uint8_t dest, uint8_t category, uint8_t
 #define DefineWriteFunctions( name, type ) \
   inline void bmConfigWrite##name##At( struct BMSDIMessage *msg, int i, type d ) \
   { \
-    ((type *)msg->message.config.bytes)[i] = d; \
+    ((type *)msg->config.bytes)[i] = d; \
   } \
   inline void bmConfigWrite##name( struct BMSDIMessage *msg, type d ) \
   {  \
@@ -93,7 +93,7 @@ DefineWriteFunctions( Int64, uint64_t )
 // Specialized versions for dealing with Fixed32 types
 inline void bmConfigWriteFixed16At( struct BMSDIMessage *msg, int i, float f )
 {
-  ((int16_t *)msg->message.config.bytes)[i] = floatToFixed16(f);
+  ((int16_t *)msg->config.bytes)[i] = floatToFixed16(f);
 }
 
 inline void bmConfigWriteFixed16( struct BMSDIMessage *msg, float f )

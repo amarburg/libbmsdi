@@ -4,30 +4,55 @@
 
 #include "libbmsdi/bmsdi_message.h"
 
+// Allocate a new 255-character BMSDIBuffer with room for up to 255 characters
+// plus its own overhead fields
 
-struct BMSDIMessage *bmNewMessage( uint8_t dest, uint8_t len, uint8_t cmd )
+// TODO.  Technically you don't even need len, you can just calculate it
+// by walking the list of messages
+struct BMSDIBuffer *bmNewBuffer()
 {
-  struct BMSDIMessage *msg = malloc(sizeof(struct BMSDIMessage));
-  msg->len = len + 4;
-
-  msg->message.header.dest = dest;
-  msg->message.header.cmd_id = cmd;
-  msg->message.header.cmd_len = len;
-  msg->message.header.reserved = 0;
-
-  return msg;
+  struct BMSDIBuffer *buffer = malloc( sizeof(struct BMSDIBuffer) );
+  buffer->len = 0;
+  memset(buffer->data, 0, MAX_BUFFER_LEN );
+  return buffer;
 }
 
-struct BMSDIMessage *bmNewConfigMessage( uint8_t dest, uint8_t category, uint8_t parameter,
-                                         uint8_t op,   uint8_t dataType, uint8_t count )
+void bmResetBuffer( struct BMSDIBuffer *buffer )
+{
+  buffer->len = 0;
+}
+
+struct BMSDIMessage *bmAddMessage( struct BMSDIBuffer *buffer,
+                                  uint8_t dest, uint8_t len, uint8_t cmd)
+{
+  uint8_t msg_len = align32(len + sizeof(struct BMSDIHeader));
+  if( (buffer->len + msg_len) > MAX_BUFFER_LEN ) return NULL;
+
+  struct BMSDIMessage *msg = (void *)&(buffer->data[buffer->len]);
+  buffer->len += msg_len;
+
+  msg->header.dest = dest;
+  msg->header.cmd_id = cmd;
+  msg->header.cmd_len = len;
+  msg->header.reserved = 0;
+
+  return msg;
+
+}
+
+struct BMSDIMessage *bmAddConfigMessage( struct BMSDIBuffer *buffer,
+                                        uint8_t dest, uint8_t category, uint8_t parameter,
+                                        uint8_t op,   uint8_t dataType, uint8_t count )
 {
   uint8_t cmdlen = sizeof(struct BMSDIConfigHeader) + (sizeOfType(dataType) * count);
-  struct BMSDIMessage *msg = bmNewMessage( dest, cmdlen, BM_CMD_CONFIG );
 
-  msg->message.config.header.category = category;
-  msg->message.config.header.parameter = parameter;
-  msg->message.config.header.datatype = dataType;
-  msg->message.config.header.operation = op;
+  struct BMSDIMessage *msg=bmAddMessage(buffer, dest, cmdlen, BM_CMD_CONFIG  );
+  if( msg==NULL ) return NULL;
+
+  msg->config.header.category = category;
+  msg->config.header.parameter = parameter;
+  msg->config.header.datatype = dataType;
+  msg->config.header.operation = op;
 
   return msg;
 }

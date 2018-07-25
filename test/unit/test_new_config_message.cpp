@@ -10,7 +10,7 @@ static void checkMessage( BMSDIMessage *msg, const uint8_t len, const uint8_t an
 {
   ASSERT_EQ( len, align32(len) );
 
-  uint8_t *data = (uint8_t *)msg->raw;
+  uint8_t *data = (uint8_t *)msg;
 
   for( int i = 0; i < len; ++i ) {
     ASSERT_EQ( answer[i], data[i]) << "In message at byte " << i;
@@ -22,9 +22,9 @@ static void checkMessageInBuffer( BMSDIBuffer *buffer, int id, const uint8_t len
   // Add code to walk through buffer to find id'th message in buffer
   ASSERT_EQ(id, 0);
 
-  for( int i = 0; i < len; ++i ) {
-    ASSERT_EQ( answer[i], buffer->data[i]) << "In message at byte " << i;
-  }
+  // TODO  Add capacity to walk through a buffer
+
+  checkMessage( (struct BMSDIMessage *)buffer->data, len, answer );
 }
 
 
@@ -35,28 +35,15 @@ TEST(TestConfigMessage, TestInstAutofocus ) {
   const uint8_t camAddr = 4;
   const uint8_t answer[] = {camAddr, 4, 0, 0, 0, 1, 0, 0};
 
-  // Test making just a raw Message
-  {
-    BMSDIMessage *msg = bmNewConfigMessage( camAddr,
-                                            BM_CAT_LENS,
-                                            BM_PARAM_INST_AUTOFOCUS,
-                                            BM_OP_ASSIGN, BM_TYPE_VOID,
-                                            0 );
-
-    checkMessage( msg, sizeof(answer), answer );
-    free(msg);
-  }
-
   // Test message in packet
   {
     BMSDIBuffer *buffer = bmNewBuffer();
-    BMSDIMessage *msg = bmNewConfigMessage( camAddr,
+    BMSDIMessage *msg = bmAddConfigMessage( buffer,
+                                            camAddr,
                                             BM_CAT_LENS,
                                             BM_PARAM_INST_AUTOFOCUS,
                                             BM_OP_ASSIGN, BM_TYPE_VOID,
                                             0 );
-
-    ASSERT_EQ( bmAddMessage( buffer, msg ), msg->len );
 
     ASSERT_EQ( buffer->len, align32(buffer->len));
     ASSERT_EQ( buffer->len, sizeof(answer) );
@@ -64,43 +51,39 @@ TEST(TestConfigMessage, TestInstAutofocus ) {
     // this also works because there's only one packet in the buffer
     checkMessageInBuffer( buffer, 0, sizeof(answer), answer );
 
-    free(msg);
+    free(buffer);
+  }
+
+  // Try this helper
+  {
+    BMSDIBuffer *buffer = bmInstantaneousAutofocus( camAddr );
+
+    ASSERT_TRUE( buffer != NULL );
+
+    // this also works because there's only one packet in the buffer
+    checkMessageInBuffer( buffer, 0, sizeof(answer), answer );
+
+    free(buffer);
+  }
+
+  // And this helper
+  {
+    BMSDIBuffer *buffer = bmNewBuffer();
+    bmAddInstantaneousAutofocus( buffer, camAddr );
+
+    ASSERT_TRUE( buffer != NULL );
+
+    // this also works because there's only one packet in the buffer
+    checkMessageInBuffer( buffer, 0, sizeof(answer), answer );
+
     free(buffer);
   }
 
 
-  //
-  // // Try this version
-  // {
-  //   BMSDIBuffer *buffer = bmInstantaneousAutofocus( camAddr );
-  //
-  //   ASSERT_TRUE( buffer != NULL );
-  //
-  //   // this also works because there's only one packet in the buffer
-  //   checkFirstPacketInBuffer( buffer, sizeof(answer), answer );
-  //
-  //   free(buffer);
-  // }
-  //
-  // // And this version
-  // {
-  //   BMSDIBuffer *buffer = bmAllocBuffer();
-  //   ASSERT_TRUE( buffer != NULL );
-  //
-  //   BMSDIConfigPacket *packet = bmAddInstantaneousAutofocus( buffer, camAddr );
-  //
-  //   ASSERT_TRUE( packet != NULL );
-  //
-  //   // this also works because there's only one packet in the buffer
-  //   checkFirstPacketInBuffer( buffer, sizeof(answer), answer );
-  //   checkPacket( (BMSDIPacket *)packet, sizeof(answer), answer );
-  //
-  //   free(buffer);
-  // }
-
 }
-//
-// // BM example "turn on OIS on all cameras"
+
+
+// BM example packet:  "turn on OIS on all cameras"
 // TEST(TestNewConfigPacket, TestOISAllCameras ) {
 //
 //   const uint8_t answer[] = {255, 5, 0, 0, 0, 6, 0, 0, 1, 0, 0, 0};
