@@ -6,7 +6,7 @@ exports:
   header-dirs:
     - include/
   modules:
-    bmsdi: .
+    bmsdi_protocol: .
 
 defines:
   FIPS_RTTI: true
