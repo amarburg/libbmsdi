@@ -78,18 +78,18 @@ inline BMSDIBuffer *bmInstantaneousAutofocus( uint8_t dest ) {
 //
 //
 //
-//   // Helpers for category 6 "Reference"
-//   inline BMSDIBuffer *bmReferenceSource( uint8_t dest, uint8_t i ) {
-//     BMSDIBuffer *buffer = bmNewConfigPacket( dest, BM_CAT_REFERENCE,
-//                                   BM_PARAM_REF_SOURCE,
-//                                   BM_OP_ASSIGN,
-//                                   BM_TYPE_INT8,
-//                                   1 );
-//
-//     bmFirstConfigWriteInt8( buffer, i );
-//
-//     return buffer;
-//   }
+
+// Helpers for category 6 "Reference"
+inline BMSDIBuffer *bmAddReferenceSource( BMSDIBuffer *buffer, uint8_t dest, uint8_t i ) {
+  BMSDIMessage *msg = bmAddConfigMessage( buffer,
+                                dest, BM_CAT_REFERENCE,
+                                BM_PARAM_REF_SOURCE,
+                                BM_OP_ASSIGN,
+                                BM_TYPE_INT8,
+                                1 );
+  bmConfigWriteInt8( msg, i );
+  return (msg ? buffer : NULL);
+}
 
 #ifdef __cplusplus
 }
