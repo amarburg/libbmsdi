@@ -7,8 +7,7 @@
 extern "C" {
 #endif
 
-
-// These are convenience wrappers which properly format / set up
+// Convenience wrappers which properly format / set up
 // the arguments to some of the commands in the BM SDK.
 
 #define HELPER_ZERO_PARAM( name, category, param ) \
