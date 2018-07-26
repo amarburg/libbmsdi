@@ -14,14 +14,16 @@ extern "C" {
 // Message 0.0:  Set focus
 inline BMSDIBuffer *bmAddFocus( BMSDIBuffer *buffer, uint8_t dest, float focus ) {
   BMSDIMessage *msg = bmAddConfigMessage( buffer,
-                                          dest, BM_CAT_LENS,
+                                          dest,
+                                          BM_CAT_LENS,
                                           BM_PARAM_FOCUS,
                                           BM_OP_ASSIGN,
                                           BM_TYPE_FIXED16,
                                           1 );
-  bmConfigWriteFixed16( msg, focus );
+  if( !msg ) return NULL;
 
-  return (msg ? buffer : NULL);
+  bmConfigWriteFixed16( msg, focus );
+  return buffer;
 }
 
 inline BMSDIBuffer *bmFocus( uint8_t dest, float focus ) {
@@ -30,23 +32,27 @@ inline BMSDIBuffer *bmFocus( uint8_t dest, float focus ) {
 
 // Message 0.0:  Increment focus
 inline BMSDIBuffer *bmAddFocusOffset( BMSDIBuffer *buffer, uint8_t dest, float inc ) {
-  BMSDIMessage *msg = bmAddConfigMessage( buffer, dest, BM_CAT_LENS,
+  BMSDIMessage *msg = bmAddConfigMessage( buffer, dest,
+                                          BM_CAT_LENS,
                                           BM_PARAM_FOCUS,
                                           BM_OP_OFFSET,
                                           BM_TYPE_FIXED16,
                                           1 );
-  bmConfigWriteFixed16( msg, inc );
+  if( !msg ) return NULL;
 
-  return (msg ? buffer : NULL);
+  bmConfigWriteFixed16( msg, inc );
+  return buffer;
 }
 
 
 
 // Message 0.1:  Instantantaneous Autofocus
 inline BMSDIBuffer *bmAddInstantaneousAutofocus( BMSDIBuffer *buffer, uint8_t dest ) {
-  BMSDIMessage *msg = bmAddConfigMessage( buffer, dest, BM_CAT_LENS,
+  BMSDIMessage *msg = bmAddConfigMessage( buffer, dest,
+                                          BM_CAT_LENS,
                                           BM_PARAM_INST_AUTOFOCUS,
-                                          BM_OP_ASSIGN, BM_TYPE_VOID,
+                                          BM_OP_ASSIGN,
+                                          BM_TYPE_VOID,
                                           0 );
   return (msg ? buffer : NULL);
 }
@@ -56,42 +62,55 @@ inline BMSDIBuffer *bmInstantaneousAutofocus( uint8_t dest ) {
 }
 
 
-// inline bool bmAddFocus( BMSDIBuffer *buffer, uint8_t dest, float focus ) {
-//   BMSDIConfigPacket *config = bmAddConfigPacket( buffer,
-//                                 dest, BM_CAT_LENS,
-//                                 BM_PARAM_FOCUS,
-//                                 BM_OP_ASSIGN,
-//                                 BM_TYPE_FIXED16,
-//                                 1 );
-//   if( !buffer ) return false;
-//
-//   bmConfigWriteFixed32( config, focus );
-//
-//   return true;
-// }
-//
-//
-//
-//   // Helpers for category 0 "Lens"
-//   inline BMSDIBuffer *bmInstantaneousAutofocus( uint8_t dest ) {
-//     return bmNewConfigPacket( dest, BM_CAT_LENS,
-//                                   BM_PARAM_INST_AUTOFOCUS,
-//                                   BM_OP_ASSIGN, BM_TYPE_VOID,
-//                                   0 );
-//   }
-//
-//   inline BMSDIConfigPacket *bmAddInstantaneousAutofocus( BMSDIBuffer *buffer, uint8_t dest ) {
-//     return bmAddConfigPacket( buffer, dest, BM_CAT_LENS,
-//                                   BM_PARAM_INST_AUTOFOCUS,
-//                                   BM_OP_ASSIGN, BM_TYPE_VOID,
-//                                   0 );
-//   }
-//
-//
-//
-//
+//=== Message 0.4:  Ordinal Aperture
+inline BMSDIBuffer *bmAddOrdinalApertureOffset( BMSDIBuffer *buffer, uint8_t dest, int inc ) {
+  BMSDIMessage *msg = bmAddConfigMessage( buffer, dest,
+                                          BM_CAT_LENS,
+                                          BM_PARAM_APERTURE_ORD,
+                                          BM_OP_OFFSET,
+                                          BM_TYPE_INT16,
+                                          1 );
+  if( !msg ) return NULL;
 
-// Helpers for category 6 "Reference"
+  bmConfigWriteInt16( msg, inc );
+  return buffer;
+}
+
+
+
+//=== Helper for 1.1:   Sensor Gain ===
+inline BMSDIBuffer *bmAddGainOffset( BMSDIBuffer *buffer, uint8_t dest, int inc ) {
+  BMSDIMessage *msg = bmAddConfigMessage( buffer, dest,
+                                          BM_CAT_VIDEO,
+                                          BM_PARAM_SENSOR_GAIN,
+                                          BM_OP_OFFSET,
+                                          BM_TYPE_INT8,
+                                          1 );
+  if( !msg ) return NULL;
+
+  bmConfigWriteInt8( msg, inc );
+  return buffer;
+}
+
+//=== Helper for 1.6:  Ordinal Shutter Speed ===
+inline BMSDIBuffer *bmAddOrdinalShutterOffset( BMSDIBuffer *buffer, uint8_t dest, int inc ) {
+  BMSDIMessage *msg = bmAddConfigMessage( buffer, dest,
+                                          BM_CAT_VIDEO,
+                                          BM_PARAM_EXPOSURE_ORD,
+                                          BM_OP_OFFSET,
+                                          BM_TYPE_INT16,
+                                          1 );
+  if( !msg ) return NULL;
+
+  bmConfigWriteInt16( msg, inc );
+  return buffer;
+}
+
+
+
+
+
+//== Helpers for category 6 "Reference" ==
 inline BMSDIBuffer *bmAddReferenceSource( BMSDIBuffer *buffer, uint8_t dest, uint8_t i ) {
   BMSDIMessage *msg = bmAddConfigMessage( buffer,
                                 dest, BM_CAT_REFERENCE,
