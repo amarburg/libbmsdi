@@ -1,9 +1,52 @@
-= Notes on the Blackmagic SDI Camera Control Protocol
 
-Functions and data types for the Blackmagic SDI camera control protocol.
-This library deals strictly with assembling the message buffers, not with
+This library contains C code to implement the Blackmagic SDI Camera
+Control Protocol, a control system by which a PC equipped with a
+BlackMagic Decklink card --- or the Blackmagic Arduino shield --- can
+send remote control commands to Blackmagic cameras through an SDI
+loop.
+
+This library deals strictly with forming messages, not with
 putting the data out to the camera --- as such it does not require the
 Blackmagic API.
+
+While the library itself is written in C, the test suite uses [gtest](), which is C++-based.
+
+
+= Usage
+
+There are two main classes.   A `BMSDIBuffer` is a 255-byte buffer with an index.  A `BMSDIMessage` is a single SDI Control message which is created by mapping
+onto the body of a buffer.
+
+An example:
+
+    ...
+
+    BMSDIBuffer *buffer = bmNewBuffer();
+    BMSDIMessage *msg = bmAddConfigMessage( buffer,
+                                            camAddr,
+                                            BM_CAT_LENS,
+                                            BM_PARAM_FOCUS,
+                                            BM_OP_ASSIGN,
+                                            BM_TYPE_FIXED16,
+                                            1 );
+    bmConfigWriteFixed16( msg, 1.0 );
+
+    // Message is now encoded in buffer->data
+
+    ...
+
+This creates an empty buffer.  Within buffer it adds a "config" message (at present the only type of message available, though the API leaves room for others).
+The header if the message is pre-loaded with the message type (`config`), the category (Lens) the parameter (Focus), the operation type (Assign), and the type and number of paramters (one 16-bit fixed, a format proprietary to the protocol).
+
+Additional messages can appended to added to the buffer.   `bmAddConfigMessage` will return NULL if the buffer becomes full ... but the previously-added messages in
+the buffer will not be affected.
+
+`libbmsdi/protocol.h` contains `#defines`s and notes for many/most of the
+constants in the protocol.
+
+
+= Notes on the Blackmagic SDI Camera Control Protocol
+
 
 Important to remember this protocol is used for data _to_ the camera.
 
