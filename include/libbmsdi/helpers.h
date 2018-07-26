@@ -39,7 +39,7 @@ extern "C" {
   }
 
 #define OFFSET_ONE_PARAM( name, category, param, p1type, p1const ) \
-  inline BMSDIMessage *bmAdd##nameOffset( BMSDIBuffer *buffer, uint8_t dest, p1type p1 ) { \
+  inline BMSDIMessage *bmAdd##name##Offset( BMSDIBuffer *buffer, uint8_t dest, p1type p1 ) { \
     BMSDIMessage *msg = bmAddConfigMessage( buffer, dest, category, param, \
                                 BM_OP_OFFSET, p1const, 1); \
     if( msg ) bmConfigWrite_##p1type( msg, p1 ); \
