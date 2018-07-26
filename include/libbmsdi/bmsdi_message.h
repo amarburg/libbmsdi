@@ -86,13 +86,35 @@ void bmResetBuffer( struct BMSDIBuffer *buffer );
   inline void bmConfigWrite##name( struct BMSDIMessage *msg, type d ) \
   {  \
     bmConfigWrite##name##At( msg, 0, d ); \
+  } \
+  \
+  inline void bmConfigWrite_##type##_At( struct BMSDIMessage *msg, int i, type d ) \
+  { \
+    ((type *)msg->config.bytes)[i] = d; \
+  } \
+  inline void bmConfigWrite_##type( struct BMSDIMessage *msg, type d ) \
+  {  \
+    bmConfigWrite_##type##_At( msg, 0, d ); \
   }
 
-DefineWriteFunctions( Boolean, uint8_t )
+DefineWriteFunctions( Boolean, bool )
 DefineWriteFunctions( Int8, uint8_t )
 DefineWriteFunctions( Int16, uint16_t )
 DefineWriteFunctions( Int32, uint32_t )
 DefineWriteFunctions( Int64, uint64_t )
+
+
+// // Specialized version for booleans (since they're basically uint8_t)
+// inline void bmConfigWriteBooleanAt( struct BMSDIMessage *msg, int i, bool d ) \
+// {
+//   ((uint8_t *)msg->config.bytes)[i] = d;
+// }
+//
+// inline void bmConfigWriteBoolean( struct BMSDIMessage *msg, bool d ) \
+// {
+//   bmConfigWriteBooleanAt( msg, 0, d );
+// }
+
 
 // Specialized versions for dealing with Fixed32 types
 inline void bmConfigWriteFixed16At( struct BMSDIMessage *msg, int i, float f )
@@ -104,6 +126,10 @@ inline void bmConfigWriteFixed16( struct BMSDIMessage *msg, float f )
 {
   bmConfigWriteFixed16At( msg, 0, f );
 }
+
+#define bmConfigWrite_float_At bmConfigWriteFixed16At
+#define bmConfigWrite_float    bmConfigWriteFixed16
+
 
 #ifdef __cplusplus
 }
