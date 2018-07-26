@@ -7,18 +7,7 @@
 extern "C" {
 #endif
 
-// #define T_TYPE(type) \
-//   #if BM_TYPE_BOOLEAN == type \
-//     bool \
-//   #elif BM_TYPE_INT8 == type \
-//     uint8_t \
-//   #elif BM_TYPE_FIXED16 == type \
-//     float \
-//   #else \
-//     #error "Unable to figure out type" \
-//   #endif
-
-// These are convenience wrappers which properly format / set up
+// Convenience wrappers which properly format / set up
 // the arguments to some of the commands in the BM SDK.
 
 #define HELPER_ZERO_PARAM( name, category, param ) \
