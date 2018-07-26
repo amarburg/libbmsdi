@@ -51,7 +51,7 @@ HELPER_ONE_PARAM( OrdinalAperture, BM_CAT_LENS, BM_PARAM_APERTURE_ORD, uint16_t,
 HELPER_ONE_PARAM( SensorGain, BM_CAT_VIDEO, BM_PARAM_SENSOR_GAIN, uint8_t, BM_TYPE_INT8 )
 
 //=== Helper for 1.6:  Ordinal Shutter Speed ===
-HELPER_ONE_PARAM( OrginalShutter, BM_CAT_VIDEO, BM_PARAM_EXPOSURE_ORD, uint16_t, BM_TYPE_INT16 )
+HELPER_ONE_PARAM( OrdinalShutter, BM_CAT_VIDEO, BM_PARAM_EXPOSURE_ORD, uint16_t, BM_TYPE_INT16 )
 
 //== Helpers for category 6 "Reference" ==
 HELPER_ONE_PARAM( ReferenceSource, BM_CAT_REFERENCE, BM_PARAM_REF_SOURCE, uint8_t, BM_TYPE_INT8 )
