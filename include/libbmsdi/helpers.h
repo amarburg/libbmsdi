@@ -21,66 +21,41 @@ extern "C" {
 // These are convenience wrappers which properly format / set up
 // the arguments to some of the commands in the BM SDK.
 
-#define HELPER_NO_PARAM( name, category, param ) \
-  inline BMSDIBuffer *bmAdd##name( BMSDIBuffer *buffer, uint8_t dest ) { \
-    BMSDIMessage *msg = bmAddConfigMessage( buffer, dest, category, param, BM_OP_ASSIGN, BM_TYPE_VOID, 0); \
-    return (msg ? buffer : NULL); \
-  } \
-  inline BMSDIBuffer *bm##name( uint8_t dest ) { \
-    return bmAdd##name( bmNewBuffer(), dest ); \
+#define HELPER_ZERO_PARAM( name, category, param ) \
+  inline BMSDIMessage *bmAdd##name( BMSDIBuffer *buffer, uint8_t dest ) { \
+    return bmAddConfigMessage( buffer, dest, category, param, BM_OP_ASSIGN, BM_TYPE_VOID, 0); \
   }
 
 
-
-#define HELPER_ONE_PARAM( name, category, param, p1type, p1const ) \
-  inline BMSDIBuffer *bmAdd##name( BMSDIBuffer *buffer, uint8_t dest, p1type p1 ) { \
+// I haven't figured out how to translate between C type (uint8_t)
+// and protocol type (BM_TYPE_INT8) inside the #define,
+// so for now you must provide both
+#define ASSIGN_ONE_PARAM( name, category, param, p1type, p1const ) \
+  inline BMSDIMessage *bmAdd##name( BMSDIBuffer *buffer, uint8_t dest, p1type p1 ) { \
     BMSDIMessage *msg = bmAddConfigMessage( buffer, dest, category, param, \
                                 BM_OP_ASSIGN, p1const, 1); \
-    if( !msg ) return NULL; \
-    bmConfigWrite_##p1type( msg, p1 ); \
-    return (msg ? buffer : NULL); \
-  } \
-  inline BMSDIBuffer *bm##name( uint8_t dest, p1type p1 ) { \
-    return bmAdd##name( bmNewBuffer(), dest, p1 ); \
+    if( msg ) bmConfigWrite_##p1type( msg, p1 ); \
+    return msg; \
+  }
+
+#define OFFSET_ONE_PARAM( name, category, param, p1type, p1const ) \
+  inline BMSDIMessage *bmAdd##nameOffset( BMSDIBuffer *buffer, uint8_t dest, p1type p1 ) { \
+    BMSDIMessage *msg = bmAddConfigMessage( buffer, dest, category, param, \
+                                BM_OP_OFFSET, p1const, 1); \
+    if( msg ) bmConfigWrite_##p1type( msg, p1 ); \
+    return msg; \
   }
 
 
+//=====
 
+//-- Message 0.0   Focus
+ASSIGN_ONE_PARAM( Focus, BM_CAT_LENS, BM_PARAM_FOCUS, float, BM_TYPE_FIXED16 )
+OFFSET_ONE_PARAM( Focus, BM_CAT_LENS, BM_PARAM_FOCUS, float, BM_TYPE_FIXED16 )
 
-// Message 0.0:  Set focus
-// inline BMSDIBuffer *bmAddFocus( BMSDIBuffer *buffer, uint8_t dest, float focus ) {
-//   BMSDIMessage *msg = bmAddConfigMessage( buffer,
-//                                           dest,
-//                                           BM_CAT_LENS,
-//                                           BM_PARAM_FOCUS,
-//                                           BM_OP_ASSIGN,
-//                                           BM_TYPE_FIXED16,
-//                                           1 );
-//   if( !msg ) return NULL;
-//
-//   bmConfigWriteFixed16( msg, focus );
-//   return buffer;
-// }
-//
-// inline BMSDIBuffer *bmFocus( uint8_t dest, float focus ) {
-//   return bmAddFocus( bmNewBuffer(), dest, focus );
-// }
+//-- Message 0.1.  Instantantaneous autofocus
+HELPER_ZERO_PARAM( InstantaneousAutofocus, BM_CAT_LENS, BM_PARAM_INST_AUTOFOCUS )
 
-HELPER_ONE_PARAM( Focus, BM_CAT_LENS, BM_PARAM_FOCUS, float, BM_TYPE_FIXED16 )
-
-// Message 0.0:  Increment focus
-inline BMSDIBuffer *bmAddFocusOffset( BMSDIBuffer *buffer, uint8_t dest, float inc ) {
-  BMSDIMessage *msg = bmAddConfigMessage( buffer, dest,
-                                          BM_CAT_LENS,
-                                          BM_PARAM_FOCUS,
-                                          BM_OP_OFFSET,
-                                          BM_TYPE_FIXED16,
-                                          1 );
-  if( !msg ) return NULL;
-
-  bmConfigWriteFixed16( msg, inc );
-  return buffer;
-}
 
 
 
@@ -94,7 +69,6 @@ inline BMSDIBuffer *bmAddFocusOffset( BMSDIBuffer *buffer, uint8_t dest, float i
 //                                           0 );
 //   return (msg ? buffer : NULL);
 // }
-HELPER_NO_PARAM( InstantaneousAutofocus, BM_CAT_LENS, BM_PARAM_INST_AUTOFOCUS )
 
 // inline BMSDIBuffer *bmInstantaneousAutofocus( uint8_t dest ) {
 //   return bmAddInstantaneousAutofocus( bmNewBuffer(), dest );

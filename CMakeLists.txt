@@ -11,34 +11,7 @@ endif()
 
 ## C++ flags applied to all builds
 set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-#
-# ## Configure OpenCV ##
-# set( OPENCV_COMPONENTS core highgui imgproc video calib3d )
-# find_package(OpenCV COMPONENTS ${OPENCV_COMPONENTS} REQUIRED)
-#
-# if( OpenCV_VERSION_MAJOR EQUAL "3" )
-#   message( STATUS "Using OpenCV 3.x")
-#   add_definitions( -DOPENCV3 )
-# else()
-#   message( STATUS "Using OpenCV 2.x")
-#   add_definitions( -DOPENCV2 )
-# endif()
-#
-#
-# ## Need this workaround for CUDA 8.0
-# #find_package( CUDA OPTIONAL 8.0 )
-# if( CUDA_VERSION )
-# 	message("Found CUDA version ${CUDA_VERSION}")
-# 	if(${CUDA_VERSION} VERSION_EQUAL "8.0")
-# 		message(STATUS "Disabling CUDA_USE_STATIC_CUDA_RUNTIME in libvideoio")
-#     SET( CUDA_USE_STATIC_CUDA_RUNTIME OFF CACHE BOOL "" FORCE )
-# 		message(STATUS ${CUDA_USE_STATIC_CUDA_RUNTIME} )
-# 	endif()
-#
-# 	find_package( CUDA REQUIRED ${CUDA_VERSION} )
-# endif()
-#
-#
+
 # ## Set global include paths
 set( BMSDI_INCLUDE_DIRS
  	${CMAKE_CURRENT_SOURCE_DIR}/include )
