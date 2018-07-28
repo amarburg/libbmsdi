@@ -131,6 +131,10 @@ inline int16_t floatToFixed16( float i )
 #define BM_PARAM_REF_SOURCE         0   // int8:  0=internal, 1=program, 2=external
 #define BM_PARAM_REF_OFFSET         1   // int32:  +/- offset in pixels
 
+#define BM_REF_SOURCE_INTERNAL      0
+#define BM_REF_SOURCE_PROGRAM       1
+#define BM_REF_SOURCE_EXTERNAL      2
+
 
 // Parameters for category 7 "Configuration"
 #define BM_PARAM_RTC               0    // 2*int32:  [0] time as HHMMSSFF BCD
