@@ -1,6 +1,6 @@
 #pragma once
 
-#include "libbmsdi/bmsdi_message.h"
+#include "bmsdi_message.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -10,7 +10,7 @@ extern "C" {
 // the arguments to some of the commands in the BM SDK.
 
 #define HELPER_ZERO_PARAM( name, category, param ) \
-  inline BMSDIMessage *bmAdd##name( BMSDIBuffer *buffer, uint8_t camNum ) { \
+  inline struct BMSDIMessage *bmAdd##name( struct BMSDIBuffer *buffer, uint8_t camNum ) { \
     return bmAddConfigMessage( buffer, camNum, category, param, BM_OP_ASSIGN, BM_TYPE_VOID, 0); \
   }
 
@@ -19,15 +19,15 @@ extern "C" {
 // and protocol type (BM_TYPE_INT8) inside the #define,
 // so for now you must provide both
 #define HELPER_ONE_PARAM( name, category, param, p1type, p1const ) \
-  inline BMSDIMessage *bmAdd##name( BMSDIBuffer *buffer, uint8_t camNum, p1type p1 ) { \
-    BMSDIMessage *msg = bmAddConfigMessage( buffer, camNum, category, param, \
+  inline struct BMSDIMessage *bmAdd##name( struct BMSDIBuffer *buffer, uint8_t camNum, p1type p1 ) { \
+    struct BMSDIMessage *msg = bmAddConfigMessage( buffer, camNum, category, param, \
                                 BM_OP_ASSIGN, p1const, 1); \
     if( msg ) bmConfigWrite_##p1type( msg, p1 ); \
     return msg; \
   }\
   \
-  inline BMSDIMessage *bmAdd##name##Offset( BMSDIBuffer *buffer, uint8_t camNum, p1type p1 ) { \
-    BMSDIMessage *msg = bmAddConfigMessage( buffer, camNum, category, param, \
+  inline struct BMSDIMessage *bmAdd##name##Offset( struct BMSDIBuffer *buffer, uint8_t camNum, p1type p1 ) { \
+    struct BMSDIMessage *msg = bmAddConfigMessage( buffer, camNum, category, param, \
                                 BM_OP_OFFSET, p1const, 1); \
     if( msg ) bmConfigWrite_##p1type( msg, p1 ); \
     return msg; \
@@ -62,9 +62,9 @@ typedef uint32_t VideoModeStruct[5];
 bool decodeBMDMode( uint32_t bmMode, VideoModeStruct mode );
 
 // Uses the 32-bit symbols from DeckLinkAPIModes.h
-inline BMSDIMessage *bmAddVideoMode( BMSDIBuffer *buffer, uint8_t camNum, int32_t mode )
+inline struct BMSDIMessage *bmAddVideoMode( struct BMSDIBuffer *buffer, uint8_t camNum, int32_t mode )
 {
-  BMSDIMessage *msg = bmAddConfigMessage( buffer, camNum,
+  struct BMSDIMessage *msg = bmAddConfigMessage( buffer, camNum,
                               BM_CAT_VIDEO, BM_PARAM_VIDEO_MODE,
                               BM_OP_ASSIGN, BM_TYPE_INT8, 5);
   if( !msg ) return msg;
@@ -79,9 +79,9 @@ inline BMSDIMessage *bmAddVideoMode( BMSDIBuffer *buffer, uint8_t camNum, int32_
 }
 
 //-- Message 1.2:  White Balance
-inline BMSDIMessage *bmAddWhiteBalance( BMSDIBuffer *buffer, uint8_t camNum, int16_t colorTemp, int16_t tint )
+inline struct BMSDIMessage *bmAddWhiteBalance( struct BMSDIBuffer *buffer, uint8_t camNum, int16_t colorTemp, int16_t tint )
 {
-  BMSDIMessage *msg = bmAddConfigMessage( buffer, camNum,
+  struct BMSDIMessage *msg = bmAddConfigMessage( buffer, camNum,
                               BM_CAT_VIDEO, BM_PARAM_WHITE_BALANCE,
                               BM_OP_ASSIGN, BM_TYPE_INT16, 2);
   if( !msg ) return msg;
@@ -95,9 +95,9 @@ inline BMSDIMessage *bmAddWhiteBalance( BMSDIBuffer *buffer, uint8_t camNum, int
   return msg;
 }
 
-inline BMSDIMessage *bmAddWhiteBalanceOffset( BMSDIBuffer *buffer, uint8_t camNum, int16_t colorTempOffset, int16_t tintOffset )
+inline struct BMSDIMessage *bmAddWhiteBalanceOffset( struct BMSDIBuffer *buffer, uint8_t camNum, int16_t colorTempOffset, int16_t tintOffset )
 {
-  BMSDIMessage *msg = bmAddConfigMessage( buffer, camNum,
+  struct BMSDIMessage *msg = bmAddConfigMessage( buffer, camNum,
                               BM_CAT_VIDEO, BM_PARAM_WHITE_BALANCE,
                               BM_OP_OFFSET, BM_TYPE_INT16, 2);
   if( !msg ) return msg;
