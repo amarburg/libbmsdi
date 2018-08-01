@@ -143,42 +143,51 @@ TEST(TestConfigMessage, TestInstAutofocus ) {
 //
 //   free(buffer);
 // }
-//
-// // BM example "set exposure to 10 ms on camera 4 (10 ms = 10000
-// //us = 0x00002710)"
-// TEST(TestNewConfigPacket, TestSetExposureOnCamera ) {
-//
-//   const uint8_t answer[] = {4, 8, 0, 0, 1, 5, 3, 0, 0x10, 0x27, 0x0, 0};
-//
-//   BMSDIBuffer *buffer = bmNewConfigPacket( 4,
-//                             BM_CAT_VIDEO,
-//                             BM_PARAM_EXPOSURE_US,
-//                             BM_OP_ASSIGN,
-//                             BM_TYPE_INT32,
-//                             1 );
-//
-//   bmFirstConfigWriteInt32( buffer, 10000 );
-//
-//   checkFirstPacketInBuffer( buffer, sizeof(answer), answer );
-//
-//   free(buffer);
-// }
-//
-//
-// // BM example "dd 15% to zebra level (15 % = 0.15 f = 0x0133 fp)"
-// TEST(TestNewConfigPacket, TestIncremenetZebraLevel ) {
-//
-//   const uint8_t answer[] = {4, 6, 0, 0, 4, 2, 128, 1, 0x33, 0x01, 0, 0};
-//
-//
-//   BMSDIBuffer *buffer = bmNewConfigPacket( 4,
-//                             BM_CAT_DISPLAY,
-//                             BM_PARAM_ZEBRA_LEVEL,
-//                             BM_OP_OFFSET,
-//                             BM_TYPE_FIXED16,
-//                             1 );
-//
-//   bmFirstConfigWriteFixed32( buffer, 0.15 );
-//
-//   checkFirstPacketInBuffer( buffer, sizeof(answer), answer );
-// }
+
+// BM example "set exposure to 10 ms on camera 4 (10 ms = 10000 us = 0x00002710)"
+TEST(TestNewConfigPacket, TestSetExposureOnCamera ) {
+
+  const uint8_t answer[] = {4, 8, 0, 0, 1, 5, 3, 0, 0x10, 0x27, 0x0, 0};
+
+  BMSDIBuffer *buffer = bmNewBuffer();
+  BMSDIMessage *msg = bmAddConfigMessage( buffer, 4,
+                            BM_CAT_VIDEO,
+                            BM_PARAM_EXPOSURE_US,
+                            BM_OP_ASSIGN,
+                            BM_TYPE_INT32,
+                            1 );
+
+  bmConfigWriteInt32( msg, 10000 );
+  checkMessageInBuffer( buffer, 0, sizeof(answer), answer );
+
+  free(buffer);
+}
+
+
+// BM example "Add 15% to zebra level (15 % = 0.15 f = 0x0133 fp)"
+TEST(TestNewConfigPacket, TestIncremenetZebraLevel ) {
+
+  const uint8_t answer[] = {4, 6, 0, 0, 4, 2, 128, 1, 0x33, 0x01, 0, 0};
+
+  BMSDIBuffer *buffer = bmNewBuffer();
+  BMSDIMessage *msg = bmAddConfigMessage( buffer, 4,
+                            BM_CAT_DISPLAY,
+                            BM_PARAM_ZEBRA_LEVEL,
+                            BM_OP_OFFSET,
+                            BM_TYPE_FIXED16,
+                            1 );
+
+  bmConfigWriteFixed16( msg, 0.15 );
+  checkMessageInBuffer( buffer, 0, sizeof(answer), answer );
+}
+
+
+// BM example "Add 15% to zebra level (15 % = 0.15 f = 0x0133 fp)"
+TEST(TestNewConfigPacket, TestSetWhiteBalance ) {
+
+  const uint8_t answer[] = {4, 8, 0, 0, 1, 2, 2, 0, 0, 0, 0, 0 };
+
+  BMSDIBuffer *buffer = bmNewBuffer();
+  BMSDIMessage *msg = bmAddWhiteBalance( buffer, 4, 0, 0 );
+  checkMessageInBuffer( buffer, 0, sizeof(answer), answer );
+}

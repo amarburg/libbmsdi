@@ -98,10 +98,10 @@ void bmResetBuffer( struct BMSDIBuffer *buffer );
   }
 
 DefineWriteFunctions( Boolean, bool )   // Technically uint8_t / ubyte
-DefineWriteFunctions( Int8, uint8_t )
-DefineWriteFunctions( Int16, uint16_t )
-DefineWriteFunctions( Int32, uint32_t )
-DefineWriteFunctions( Int64, uint64_t )
+DefineWriteFunctions( Int8, int8_t )
+DefineWriteFunctions( Int16, int16_t )
+DefineWriteFunctions( Int32, int32_t )
+DefineWriteFunctions( Int64, int64_t )
 
 // Specialized versions for dealing with Fixed32 types
 inline void bmConfigWriteFixed16At( struct BMSDIMessage *msg, int i, float f )

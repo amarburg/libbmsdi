@@ -85,12 +85,15 @@ inline int16_t floatToFixed16( float i )
 #define BM_PARAM_ZOOM_CONT        9
 
 // Parameters for category 1 "Video"
-#define BM_PARAM_VIDEO_MODE       0     // 5 * int8: [0]:  frame rate
+#define BM_PARAM_VIDEO_MODE       0     // 5 * int8: [0]:  frame rate (24,25,30,50,60)
                                         //           [1]:  0=regular, 1=M-rate
                                         //           [2]:  dimensions
+                              					//                    0=NTSC,  1=PAL, 2=720
+                              					//                    3=1080, 4=2k, 5=2k DCI,
+                              					//                    6=4k, 7=4k DCI
                                         //           [3]:  0=progressize, 1=interlaced
-                                        //           [4]:  0=YUV color BMSDIConfigPacket
-#define BM_PARAM_SENSOR_GAIN      1     // int8:    sensor gain (1x - 16x)
+                                        //           [4]:  0=YUV color
+#define BM_PARAM_SENSOR_GAIN      1     // int8:    sensor gain (1x - 16x).   1 = -12db; 2 = -6db; 4 = 0 db; 8 = +6db; 16 = +12db
 #define BM_PARAM_WHITE_BALANCE    2     // 2 * int16:  color temp (2500-10000);
                                         //             tint -50 50
 #define BM_PARAM_AUTO_WB          3     // void:     set auto white balance
