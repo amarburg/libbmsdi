@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include "libbmsdi/bmsdi_message.h"
 
 #ifdef __cplusplus
@@ -58,25 +57,29 @@ HELPER_ONE_PARAM( ReferenceSource, BM_CAT_REFERENCE, BM_PARAM_REF_SOURCE, int8_t
 
 
 //==Helper for 1.0:  Set Video Mode ==
+
+typedef uint32_t VideoModeStruct[5];
+bool decodeBMDMode( uint32_t bmMode, VideoModeStruct mode );
+
 // Uses the 32-bit symbols from DeckLinkAPIModes.h
-BMSDIMessage *bmAddVideoMode( BMSDIBuffer *buffer, uint8_t camNum, int32_t mode )
+inline BMSDIMessage *bmAddVideoMode( BMSDIBuffer *buffer, uint8_t camNum, int32_t mode )
 {
   BMSDIMessage *msg = bmAddConfigMessage( buffer, camNum,
                               BM_CAT_VIDEO, BM_PARAM_VIDEO_MODE,
                               BM_OP_ASSIGN, BM_TYPE_INT8, 5);
   if( !msg ) return msg;
 
-  bmConfigWriteInt8At( msg, 0, 60 );   // frame rate
-  bmConfigWriteInt8At( msg, 1, 1 );   // Standard rate
-  bmConfigWriteInt8At( msg, 2, 2 );   // 1080
-  bmConfigWriteInt8At( msg, 3, 0 );   // progressive
-  bmConfigWriteInt8At( msg, 4, 0 );   // yuv
+  VideoModeStruct vms;
+  if( !decodeBMDMode( mode, vms ) ) return msg;
+
+  for( uint8_t i = 0; i < 5; ++i )
+    bmConfigWriteInt8At( msg, i, vms[i] );
 
   return msg;
 }
 
 //-- Message 1.2:  White Balance
-BMSDIMessage *bmAddWhiteBalance( BMSDIBuffer *buffer, uint8_t camNum, int16_t colorTemp, int16_t tint )
+inline BMSDIMessage *bmAddWhiteBalance( BMSDIBuffer *buffer, uint8_t camNum, int16_t colorTemp, int16_t tint )
 {
   BMSDIMessage *msg = bmAddConfigMessage( buffer, camNum,
                               BM_CAT_VIDEO, BM_PARAM_WHITE_BALANCE,
@@ -92,7 +95,7 @@ BMSDIMessage *bmAddWhiteBalance( BMSDIBuffer *buffer, uint8_t camNum, int16_t co
   return msg;
 }
 
-BMSDIMessage *bmAddWhiteBalanceOffset( BMSDIBuffer *buffer, uint8_t camNum, int16_t colorTempOffset, int16_t tintOffset )
+inline BMSDIMessage *bmAddWhiteBalanceOffset( BMSDIBuffer *buffer, uint8_t camNum, int16_t colorTempOffset, int16_t tintOffset )
 {
   BMSDIMessage *msg = bmAddConfigMessage( buffer, camNum,
                               BM_CAT_VIDEO, BM_PARAM_WHITE_BALANCE,

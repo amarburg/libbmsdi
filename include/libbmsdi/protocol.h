@@ -93,6 +93,9 @@ inline int16_t floatToFixed16( float i )
                               					//                    6=4k, 7=4k DCI
                                         //           [3]:  0=progressize, 1=interlaced
                                         //           [4]:  0=YUV color
+                                        //
+                                        //  See decodeBMDMode() to made BM SDK BMDisplayMode to this structure
+                                        //
 #define BM_PARAM_SENSOR_GAIN      1     // int8:    sensor gain (1x - 16x).   1 = -12db; 2 = -6db; 4 = 0 db; 8 = +6db; 16 = +12db
 #define BM_PARAM_WHITE_BALANCE    2     // 2 * int16:  color temp (2500-10000);
                                         //             tint -50 50

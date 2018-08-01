@@ -185,9 +185,9 @@ TEST(TestNewConfigPacket, TestIncremenetZebraLevel ) {
 // BM example "Add 15% to zebra level (15 % = 0.15 f = 0x0133 fp)"
 TEST(TestNewConfigPacket, TestSetWhiteBalance ) {
 
-  const uint8_t answer[] = {4, 8, 0, 0, 1, 2, 2, 0, 0, 0, 0, 0 };
+  const uint8_t answer[] = {4, 8, 0, 0, 1, 2, 2, 0, 0x64, 0x19, 0, 0 };
 
   BMSDIBuffer *buffer = bmNewBuffer();
-  BMSDIMessage *msg = bmAddWhiteBalance( buffer, 4, 0, 0 );
+  BMSDIMessage *msg = bmAddWhiteBalance( buffer, 4, 6500, 0 );  // 6500 = 0x1964
   checkMessageInBuffer( buffer, 0, sizeof(answer), answer );
 }
