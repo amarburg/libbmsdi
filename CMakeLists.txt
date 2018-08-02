@@ -27,7 +27,11 @@ if( NOT FIPS_IMPORT )
 	fips_add_subdirectory("apps/")
 
 	if( FIPS_UNITTESTS )
-	  fips_add_subdirectory( test/unit/ )
+		gtest_begin( bmsdi_protocol )
+		    fips_src(unit/test/)
+		    fips_deps( bmsdi_protocol )
+		    # include_directories( ${TEST_DATA_DIR} )
+		gtest_end()
 	endif()
 
 	fips_finish()
