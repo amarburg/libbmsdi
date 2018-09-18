@@ -19,64 +19,50 @@
 
 //
 // n.b. I haven't tested all of these modes.  Good luck!
-struct VideoModeRef {
-  uint32_t mode;
-  uint32_t frameRate;
-  uint32_t timing;
-  uint32_t resolution;
-  uint32_t progressive;
-} VideoModeTable[] = {
+const struct VideoModeRef VideoModeTable[] = {
   //HD1080 modes
-  {0x32337073, 24, 1, 3, 0}, // bmdModeHD1080p2398
-  {0x32347073, 24, 0, 3, 0}, // bmdModeHD1080p24
-  {0x48703235, 25, 0, 3, 0}, // bmdModeHD1080p25
-  {0x48703239, 30, 1, 3, 0}, // bmdModeHD1080p2997
-  {0x48703330, 30, 0, 3, 0}, // bmdModeHD1080p30
-  {0x48693530, 50, 0, 3, 1}, // bmdModeHD1080i50
-  {0x48693539, 60, 1, 3, 1}, // bmdModeHD1080i5994
-  {0x48693630, 60, 0, 3, 1}, // bmdModeHD1080i6000
-  {0x48703530, 50, 0, 3, 0}, // bmdModeHD1080p50
-  {0x48703539, 60, 1, 3, 0}, // bmdModeHD1080p5994
-  {0x48703630, 60, 0, 3, 0}, // bmdModeHD1080p6000
+  {0x32337073, 24, 1, 3, 0, 1920, 1080, 23.98 },
+  {0x32347073, 24, 0, 3, 0, 1920, 1080, 24.0  },
+  {0x48703235, 25, 0, 3, 0, 1920, 1080, 25.0 },
+  {0x48703239, 30, 1, 3, 0, 1920, 1080, 29.97 },
+  {0x48703330, 30, 0, 3, 0, 1920, 1080, 30.0 },
+  {0x48693530, 50, 0, 3, 1, 1920, 1080, 50.0 },
+  {0x48693539, 60, 1, 3, 1, 1920, 1080, 59.94 },
+  {0x48693630, 60, 0, 3, 1, 1920, 1080, 60.0 },
+  {0x48703530, 50, 0, 3, 0, 1920, 1080, 50.0 },
+  {0x48703539, 60, 1, 3, 0, 1920, 1080, 59.94 },
+  {0x48703630, 60, 0, 3, 0, 1920, 1080, 60.0 },
 
   // HD720 Modes
-  {0x68703530, 50, 0, 2, 0}, // bmdModeHD720p50
-  {0x68703539, 60, 1, 2, 0}, // bmdModeHD720p5994
-  {0x68703630, 60, 0, 2, 0}, // bmdModeHD720p60
+  {0x68703530, 50, 0, 2, 0, 1280, 720, 50 },
+  {0x68703539, 60, 1, 2, 0, 1280, 720, 5994 },
+  {0x68703630, 60, 0, 2, 0, 1280, 720, 60 },
 
   // 2K Modes
-  {0x326B3233, 24, 1, 4, 0}, // bmdMode2k2398
-  {0x326B3234, 24, 0, 4, 0}, // bmdMode2k24
-  {0x326B3235, 25, 0, 4, 0}, // bmdMode2k25
+  {0x326B3233, 24, 1, 4, 0, 2048, 1080, 23.98 },
+  {0x326B3234, 24, 0, 4, 0, 2048, 1080, 24.0  },
+  {0x326B3235, 25, 0, 4, 0, 2048, 1080, 25.0  },
 
   // 4K Modes
-  {0x346B3233, 24, 1, 6, 0}, // bmdMode4K2160p2398
-  {0x346B3234, 24, 0, 6, 0}, // bmdMode4K2160p24
-  {0x346B3235, 25, 0, 6, 0}, // bmdMode4K2160p25
-  {0x346B3239, 30, 1, 6, 0}, // bmdMode4K2160p2997
-  {0x346B3330, 30, 0, 6, 0}, // bmdMode4K2160p30
-  {0x346B3530, 50, 0, 6, 0}, // bmdMode4K2160p50
-  {0x346B3539, 60, 1, 6, 0}, // bmdMode4K2160p5994
-  {0x346B3630, 60, 0, 6, 0}  // bmdMode4K2160p60
+  {0x346B3233, 24, 1, 6, 0, 4096, 2160, 23.98 },
+  {0x346B3234, 24, 0, 6, 0, 4096, 2160, 24.0  },
+  {0x346B3235, 25, 0, 6, 0, 4096, 2160, 25.0  },
+  {0x346B3239, 30, 1, 6, 0, 4096, 2160, 29.97 },
+  {0x346B3330, 30, 0, 6, 0, 4096, 2160, 30.0  },
+  {0x346B3530, 50, 0, 6, 0, 4096, 2160, 50.0  },
+  {0x346B3539, 60, 1, 6, 0, 4096, 2160, 59.94 },
+  {0x346B3630, 60, 0, 6, 0, 4096, 2160, 60.0  }
 };
 
 
 
-bool decodeBMDMode( uint32_t bmMode, VideoModeStruct mode ) {
+const struct VideoModeRef *decodeBMDMode( uint32_t bmMode ) {
 
   for( unsigned int i = 0; i < (sizeof(VideoModeTable)/sizeof(struct VideoModeRef)); ++i ) {
     if( bmMode == VideoModeTable[i].mode ) {
-
-      mode[0] = VideoModeTable[i].frameRate;
-      mode[1] = VideoModeTable[i].timing;
-      mode[2] = VideoModeTable[i].resolution;
-      mode[3] = VideoModeTable[i].progressive;
-      mode[4] = 0;  //Only one choice, YVU
-
-      return true;
+      return &(VideoModeTable[i]);
     }
   }
 
-  fprintf(stderr, "Couldn't decode mode %08x!\n", bmMode );
-  return false;
+  return NULL;
 }

@@ -58,8 +58,17 @@ HELPER_ONE_PARAM( ReferenceSource, BM_CAT_REFERENCE, BM_PARAM_REF_SOURCE, int8_t
 
 //==Helper for 1.0:  Set Video Mode ==
 
-typedef uint32_t VideoModeStruct[5];
-bool decodeBMDMode( uint32_t bmMode, VideoModeStruct mode );
+struct VideoModeRef {
+  uint32_t mode;   // Equal to tje BMDDisplayMode enum!
+  uint8_t intFrameRate; // | These four parameters correspond to
+  uint8_t timing;       // | four of the five parameters to the
+  uint8_t resolution;   // | SDI protocol message for setting the
+  uint8_t progressive;  // | videe mode
+  unsigned int width, height;
+  float    frameRate;
+};
+
+const struct VideoModeRef *decodeBMDMode( uint32_t bmMode );
 
 // Uses the 32-bit symbols from DeckLinkAPIModes.h
 inline struct BMSDIMessage *bmAddVideoMode( struct BMSDIBuffer *buffer, uint8_t camNum, int32_t mode )
@@ -69,11 +78,15 @@ inline struct BMSDIMessage *bmAddVideoMode( struct BMSDIBuffer *buffer, uint8_t 
                               BM_OP_ASSIGN, BM_TYPE_INT8, 5);
   if( !msg ) return msg;
 
-  VideoModeStruct vms;
-  if( !decodeBMDMode( mode, vms ) ) return msg;
+  const struct VideoModeRef *vms = decodeBMDMode( mode );
+  if( vms == NULL ) return msg;
 
-  for( uint8_t i = 0; i < 5; ++i )
-    bmConfigWriteInt8At( msg, i, vms[i] );
+  bmConfigWriteInt8At( msg, 0, vms->intFrameRate );
+  bmConfigWriteInt8At( msg, 1, vms->timing );
+  bmConfigWriteInt8At( msg, 2, vms->resolution );
+  bmConfigWriteInt8At( msg, 3, vms->progressive );
+  bmConfigWriteInt8At( msg, 4, 0 );
+
 
   return msg;
 }
