@@ -51,6 +51,17 @@ HELPER_ONE_PARAM( SensorGain, BM_CAT_VIDEO, BM_PARAM_SENSOR_GAIN, int8_t, BM_TYP
 //=== Helper for 1.6:  Ordinal Shutter Speed ===
 HELPER_ONE_PARAM( OrdinalShutter, BM_CAT_VIDEO, BM_PARAM_EXPOSURE_ORD, int16_t, BM_TYPE_INT16 )
 
+//=== Helper for 1.10:   AutoExposure mode ===
+HELPER_ONE_PARAM( AutoExposureMode, BM_CAT_VIDEO, BM_PARAM_AUTOEXPOSURE_MODE, int8_t, BM_TYPE_INT8 )
+
+
+//== Helpers for category 3 "Output" ==
+
+//-- Helper for 3.0 "Overlay enable"
+HELPER_ONE_PARAM( OverlayEnable, BM_CAT_OUTPUT, BM_PARAM_OVERLAY_EN, int16_t, BM_TYPE_INT16 )
+
+
+
 //== Helpers for category 6 "Reference" ==
 HELPER_ONE_PARAM( ReferenceSource, BM_CAT_REFERENCE, BM_PARAM_REF_SOURCE, int8_t, BM_TYPE_INT8 )
 

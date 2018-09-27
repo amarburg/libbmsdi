@@ -38,29 +38,29 @@ static const BmSensorGainRef BmSensorGainTable[] = {
 
 static const size_t BmSensorGainTableLen = (sizeof(BmSensorGainTable)/sizeof(BmSensorGainRef));
 
-//== Constants for handling f-stop ==
+//== Constants for handling aperture =====================================
 // f-stops are all designated by the denominator e.g. BM_FSTOP_1_4 == f/1.4
 
-typedef enum {
-  BM_FSTOP_1_4 = 1
-} BmApertureOrd;
-
-struct BmApertureRef {
-#ifdef __cplusplus
-  typedef BmApertureOrd OrdType;
-  typedef float ValType;
-#endif
-
-  BmApertureOrd   ord;
-  float           val;
-  const char     *str;
-};
-
-static const BmApertureRef BmApertureTable[] = {
-  { BM_FSTOP_1_4, 1.4, "f/1.4" }
-};
-
-static const size_t BmApertureTableLen = (sizeof(BmApertureTable)/sizeof(BmApertureRef));
+// typedef enum {
+// } BmApertureOrd;
+//
+// struct BmApertureRef {
+// #ifdef __cplusplus
+//   typedef int OrdType;
+//   typedef float ValType;
+// #endif
+//
+//   BmApertureOrd   ord;
+//   float           val;
+//   const char     *str;
+// };
+//
+// static const BmApertureRef BmApertureTable[] = {
+//   { BM_FSTOP_1_4, 1.4, "f/1.4" },
+//   { BM_FSTOP_1_8, 1.8, "f/1.8" }
+// };
+//
+// static const size_t BmApertureTableLen = (sizeof(BmApertureTable)/sizeof(BmApertureRef));
 
 #ifdef __cplusplus
 }
