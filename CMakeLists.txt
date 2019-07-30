@@ -18,7 +18,7 @@ set( BMSDI_INCLUDE_DIRS
 include_directories( ${BMSDI_INCLUDE_DIRS} )
 
 #
-fips_begin_module( bmsdi_protocol )
+fips_begin_module( bmsdi-protocol )
   fips_src( lib/ )
 fips_end_module()
 
@@ -27,9 +27,9 @@ if( NOT FIPS_IMPORT )
 	fips_add_subdirectory("apps/")
 
 	if( FIPS_UNITTESTS )
-		gtest_begin( bmsdi_protocol )
+		gtest_begin( bmsdi-protocol )
 		    fips_src(unit/test/)
-		    fips_deps( bmsdi_protocol )
+		    fips_deps( bmsdi-protocol )
 		    # include_directories( ${TEST_DATA_DIR} )
 		gtest_end()
 	endif()
