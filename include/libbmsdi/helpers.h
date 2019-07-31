@@ -48,7 +48,11 @@ HELPER_ONE_PARAM( OrdinalAperture, BM_CAT_LENS, BM_PARAM_APERTURE_ORD, int16_t, 
 //=== Helper for 1.1:   Sensor Gain ===
 HELPER_ONE_PARAM( SensorGain, BM_CAT_VIDEO, BM_PARAM_SENSOR_GAIN, int8_t, BM_TYPE_INT8 )
 
+//=== Helper for 1.5:  Shutter Speed in microseconds ===
+HELPER_ONE_PARAM( ExposureMicroseconds, BM_CAT_VIDEO, BM_PARAM_EXPOSURE_US, int32_t, BM_TYPE_INT32 )
+
 //=== Helper for 1.6:  Ordinal Shutter Speed ===
+HELPER_ONE_PARAM( OrdinalExposure, BM_CAT_VIDEO, BM_PARAM_EXPOSURE_ORD, int16_t, BM_TYPE_INT16 )
 HELPER_ONE_PARAM( OrdinalShutter, BM_CAT_VIDEO, BM_PARAM_EXPOSURE_ORD, int16_t, BM_TYPE_INT16 )
 
 //=== Helper for 1.10:   AutoExposure mode ===
@@ -59,6 +63,9 @@ HELPER_ONE_PARAM( OrdinalShutter, BM_CAT_VIDEO, BM_PARAM_EXPOSURE_ORD, int16_t, 
 #define BM_AUTOEXPOSURE_IRIS_SHUTTER 3
 #define BM_AUTOEXPOSURE_SHUTTER_IRIS 4
 HELPER_ONE_PARAM( AutoExposureMode, BM_CAT_VIDEO, BM_PARAM_AUTOEXPOSURE_MODE, int8_t, BM_TYPE_INT8 )
+
+//=== Helper for 1.5:  Shutter Speed in microseconds ===
+HELPER_ONE_PARAM( ShutterSpeed, BM_CAT_VIDEO, BM_PARAM_SHUTTER_SPEED, int32_t, BM_TYPE_INT32 )
 
 
 //== Helpers for category 3 "Output" ==
