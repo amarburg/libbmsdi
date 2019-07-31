@@ -53,7 +53,7 @@ HELPER_ONE_PARAM( ExposureMicroseconds, BM_CAT_VIDEO, BM_PARAM_EXPOSURE_US, int3
 
 //=== Helper for 1.6:  Ordinal Shutter Speed ===
 HELPER_ONE_PARAM( OrdinalExposure, BM_CAT_VIDEO, BM_PARAM_EXPOSURE_ORD, int16_t, BM_TYPE_INT16 )
-HELPER_ONE_PARAM( OrdinalShutter, BM_CAT_VIDEO, BM_PARAM_EXPOSURE_ORD, int16_t, BM_TYPE_INT16 )
+HELPER_ONE_PARAM( OrdinalShutter,  BM_CAT_VIDEO, BM_PARAM_EXPOSURE_ORD, int16_t, BM_TYPE_INT16 )
 
 //=== Helper for 1.10:   AutoExposure mode ===
 
