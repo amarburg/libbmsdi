@@ -115,7 +115,8 @@ inline int16_t floatToFixed16( float i )
                                         //        3=Iris + Shutter
                                         //        4=Shutter + Iris
 
-#define BM_PARAM_SHUTTER_SPEED     12   // int32
+#define BM_PARAM_SHUTTER_SPEED     12   // int32 "Shutter speed value as a fraction of 1
+                                        // for example 50 for 1/50th of second
 
 // Parameters for category 2 "Audio"
 // ((I'm not going to use them, so I can't test them...))

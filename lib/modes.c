@@ -5,7 +5,9 @@
 
 #include "libbmsdi/helpers.h"
 
-// Made my job slightly harder by not being dependent on Blackmagic SDK
+// Need to re-create this table since we've decided not to be dependent on
+// the Blackmagic SDK
+//
 // params for BM_PARAM_VIDEO_MODE:
 // 5 * int8: [0]:  frame rate (24,25,30,50,60)
 //           [1]:  0=regular, 1=M-rate

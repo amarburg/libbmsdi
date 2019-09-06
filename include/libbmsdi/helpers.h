@@ -8,7 +8,6 @@ extern "C" {
 
 // Convenience wrappers which properly format / set up
 // the arguments to some of the commands in the BM SDK.
-
 #define HELPER_ZERO_PARAM( name, category, param ) \
   inline struct BMSDIMessage *bmAdd##name( struct BMSDIBuffer *buffer, uint8_t camNum ) { \
     return bmAddConfigMessage( buffer, camNum, category, param, BM_OP_ASSIGN, BM_TYPE_VOID, 0); \
@@ -33,6 +32,21 @@ extern "C" {
     return msg; \
   }
 
+#define DEPRECATED_HELPER_ONE_PARAM( name, category, param, p1type, p1const ) \
+  inline struct BMSDIMessage *bmAdd##name( struct BMSDIBuffer *buffer, uint8_t camNum, p1type p1 ) { \
+    struct BMSDIMessage *msg = bmAddConfigMessage( buffer, camNum, category, param, \
+                                BM_OP_ASSIGN, p1const, 1); \
+    if( msg ) bmConfigWrite_##p1type( msg, p1 ); \
+    return msg; \
+  } __attribute__ ((deprecated))\
+  \
+  inline struct BMSDIMessage *bmAdd##name##Offset( struct BMSDIBuffer *buffer, uint8_t camNum, p1type p1 ) { \
+    struct BMSDIMessage *msg = bmAddConfigMessage( buffer, camNum, category, param, \
+                                BM_OP_OFFSET, p1const, 1); \
+    if( msg ) bmConfigWrite_##p1type( msg, p1 ); \
+    return msg; \
+  } __attribute__ ((deprecated))
+
 
 //=====
 
@@ -42,18 +56,23 @@ HELPER_ONE_PARAM( Focus, BM_CAT_LENS, BM_PARAM_FOCUS, float, BM_TYPE_FIXED16 )
 //-- Message 0.1.  Instantantaneous autofocus
 HELPER_ZERO_PARAM( InstantaneousAutofocus, BM_CAT_LENS, BM_PARAM_INST_AUTOFOCUS )
 
-//=== Message 0.4:  Ordinal Aperture
-HELPER_ONE_PARAM( OrdinalAperture, BM_CAT_LENS, BM_PARAM_APERTURE_ORD, int16_t, BM_TYPE_INT16 )
+//-- Message 0.2 - 0.4:  Set aperture
+HELPER_ONE_PARAM( ApertureFStop, BM_CAT_LENS, BM_PARAM_APERTURE_FSTOP, float, BM_TYPE_FIXED16 )
+HELPER_ONE_PARAM( ApertureNormalized, BM_CAT_LENS, BM_PARAM_APERTURE_NORM, float, BM_TYPE_FIXED16 )
+HELPER_ONE_PARAM( ApertureOrdinal, BM_CAT_LENS, BM_PARAM_APERTURE_ORD, int16_t, BM_TYPE_INT16 )
+
+DEPRECATED_HELPER_ONE_PARAM( OrdinalAperture, BM_CAT_LENS, BM_PARAM_APERTURE_ORD, int16_t, BM_TYPE_INT16 )
 
 //=== Helper for 1.1:   Sensor Gain ===
 HELPER_ONE_PARAM( SensorGain, BM_CAT_VIDEO, BM_PARAM_SENSOR_GAIN, int8_t, BM_TYPE_INT8 )
 
-//=== Helper for 1.5:  Shutter Speed in microseconds ===
+//=== Helper for 1.5:  Shutter Speed in microseconds  1-42000 ===
 HELPER_ONE_PARAM( ExposureMicroseconds, BM_CAT_VIDEO, BM_PARAM_EXPOSURE_US, int32_t, BM_TYPE_INT32 )
 
-//=== Helper for 1.6:  Ordinal Shutter Speed ===
-HELPER_ONE_PARAM( OrdinalExposure, BM_CAT_VIDEO, BM_PARAM_EXPOSURE_ORD, int16_t, BM_TYPE_INT16 )
-HELPER_ONE_PARAM( OrdinalShutter,  BM_CAT_VIDEO, BM_PARAM_EXPOSURE_ORD, int16_t, BM_TYPE_INT16 )
+//=== Helper for 1.6:  Ordinal Shutter Speed 0-n ===
+HELPER_ONE_PARAM( ExposureOrginal, BM_CAT_VIDEO, BM_PARAM_EXPOSURE_ORD, int16_t, BM_TYPE_INT16 )
+DEPRECATED_HELPER_ONE_PARAM( OrdinalExposure, BM_CAT_VIDEO, BM_PARAM_EXPOSURE_ORD, int16_t, BM_TYPE_INT16 )
+DEPRECATED_HELPER_ONE_PARAM( OrdinalShutter,  BM_CAT_VIDEO, BM_PARAM_EXPOSURE_ORD, int16_t, BM_TYPE_INT16 )
 
 //=== Helper for 1.10:   AutoExposure mode ===
 
@@ -64,9 +83,8 @@ HELPER_ONE_PARAM( OrdinalShutter,  BM_CAT_VIDEO, BM_PARAM_EXPOSURE_ORD, int16_t,
 #define BM_AUTOEXPOSURE_SHUTTER_IRIS 4
 HELPER_ONE_PARAM( AutoExposureMode, BM_CAT_VIDEO, BM_PARAM_AUTOEXPOSURE_MODE, int8_t, BM_TYPE_INT8 )
 
-//=== Helper for 1.5:  Shutter Speed in microseconds ===
+//=== Helper for 1.12:  Shutter Speed given as the denominator e.g. 50 for 1/50th of second  ===
 HELPER_ONE_PARAM( ShutterSpeed, BM_CAT_VIDEO, BM_PARAM_SHUTTER_SPEED, int32_t, BM_TYPE_INT32 )
-
 
 //== Helpers for category 3 "Output" ==
 

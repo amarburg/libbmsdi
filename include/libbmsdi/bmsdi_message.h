@@ -73,28 +73,25 @@ struct BMSDIMessage *bmMessageAt( struct BMSDIBuffer *buffer, int idx );
 void bmResetBuffer( struct BMSDIBuffer *buffer );
 
 
-// struct BMSDIConfigPacket *bmAddConfigPacket( struct BMSDIBuffer *buffer,
-//                                       uint8_t dest, uint8_t category, uint8_t parameter,
-//                                       uint8_t op, uint8_t dataType, uint8_t count );
 
 
-#define DefineWriteFunctions( name, type ) \
-  inline void bmConfigWrite##name##At( struct BMSDIMessage *msg, int i, type d ) \
+#define DefineWriteFunctions( name, ctype ) \
+  inline void bmConfigWrite##name##At( struct BMSDIMessage *msg, int i, ctype d ) \
   { \
-    ((type *)msg->config.bytes)[i] = d; \
+    ((ctype *)msg->config.bytes)[i] = d; \
   } \
-  inline void bmConfigWrite##name( struct BMSDIMessage *msg, type d ) \
+  inline void bmConfigWrite##name( struct BMSDIMessage *msg, ctype d ) \
   {  \
     bmConfigWrite##name##At( msg, 0, d ); \
   } \
   \
-  inline void bmConfigWrite_##type##_At( struct BMSDIMessage *msg, int i, type d ) \
+  inline void bmConfigWrite_##ctype##_At( struct BMSDIMessage *msg, int i, ctype d ) \
   { \
-    ((type *)msg->config.bytes)[i] = d; \
+    ((ctype *)msg->config.bytes)[i] = d; \
   } \
-  inline void bmConfigWrite_##type( struct BMSDIMessage *msg, type d ) \
+  inline void bmConfigWrite_##ctype( struct BMSDIMessage *msg, ctype d ) \
   {  \
-    bmConfigWrite_##type##_At( msg, 0, d ); \
+    bmConfigWrite_##ctype##_At( msg, 0, d ); \
   }
 
 DefineWriteFunctions( Boolean, bool )   // Technically uint8_t / ubyte

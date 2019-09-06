@@ -7,7 +7,7 @@
 // Allocate a new 255-character BMSDIBuffer with room for up to 255 characters
 // plus its own overhead fields
 
-// TODO.  Technically you don't even need len, you can just calculate it
+// \TODO.  Technically you don't even need len, you can just calculate it
 // by walking the list of messages
 struct BMSDIBuffer *bmNewBuffer()
 {
