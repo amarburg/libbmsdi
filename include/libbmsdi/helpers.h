@@ -33,19 +33,19 @@ extern "C" {
   }
 
 #define DEPRECATED_HELPER_ONE_PARAM( name, category, param, p1type, p1const ) \
-  inline struct BMSDIMessage *bmAdd##name( struct BMSDIBuffer *buffer, uint8_t camNum, p1type p1 ) { \
+  __attribute__ ((deprecated)) inline struct BMSDIMessage *bmAdd##name( struct BMSDIBuffer *buffer, uint8_t camNum, p1type p1 ) { \
     struct BMSDIMessage *msg = bmAddConfigMessage( buffer, camNum, category, param, \
                                 BM_OP_ASSIGN, p1const, 1); \
     if( msg ) bmConfigWrite_##p1type( msg, p1 ); \
     return msg; \
-  } __attribute__ ((deprecated))\
+  }\
   \
-  inline struct BMSDIMessage *bmAdd##name##Offset( struct BMSDIBuffer *buffer, uint8_t camNum, p1type p1 ) { \
+  __attribute__ ((deprecated)) inline struct BMSDIMessage *bmAdd##name##Offset( struct BMSDIBuffer *buffer, uint8_t camNum, p1type p1 ) { \
     struct BMSDIMessage *msg = bmAddConfigMessage( buffer, camNum, category, param, \
                                 BM_OP_OFFSET, p1const, 1); \
     if( msg ) bmConfigWrite_##p1type( msg, p1 ); \
     return msg; \
-  } __attribute__ ((deprecated))
+  }
 
 
 //=====
