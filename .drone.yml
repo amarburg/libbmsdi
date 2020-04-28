@@ -16,7 +16,7 @@ steps:
 - name: build-fips-release
   image: amarburg/lsdslam-dev-host
   commands:
-    - ./fips set config linux-make-release
+    - ./fips set config linux-make-release-unittest
     - ./fips build
 
 - name: build-ros-melodic
